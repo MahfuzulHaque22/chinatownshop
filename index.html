@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Responsive Floating Nav</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <div class="header-wrapper">
+    <header class="header" id="mainHeader">
+      <div class="logo">
+        <span class="logo-text">
+          <sup><strong>CHINA TOWN</strong></sup><sub>Shop</sub>
+        </span>
+        <img src="assets/images/ChinaTown.png" alt="China Town Shop Logo" class="logo-img" />
+      </div>
+
+      <nav class="navbar" id="navbar">
+        <a href="#">Home</a>
+        <a href="#">Shop</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+      </nav>
+
+      <div class="controls">
+        <button class="icon-btn desktop-only" id="categoryBtnInside">
+          <img src="assets/icons/categories.png" class="icon-img" alt="Category Icon">
+        </button>
+
+        <button class="icon-btn" id="themeToggleIcon">
+          <img src="assets/icons/moon.png" alt="Toggle Theme" class="icon-img" id="themeIconImg">
+        </button>
+
+        <button class="icon-btn desktop-only" id="userBtnInside">
+          <img src="assets/icons/user.png" class="icon-img" alt="User Icon">
+        </button>
+
+        <button class="icon-btn mobile-only" id="menuToggle">
+          <img src="assets/icons/menu.png" class="icon-img" alt="Menu Icon">
+        </button>
+      </div>
+    </header>
+  </div>
+
+<!-- Category Drawer -->
+<div class="category-drawer" id="categoryDrawer">
+  <div class="drawer-header">
+    <button id="closeCategoryDrawer">×</button>
+    <span id="drawerTitle">Categories</span>
+  </div>
+  <div class="category-content">
+    <ul class="main-category-list" id="mainCategoryList">
+      <li data-category="Bags">Bags</li>
+      <li data-category="Jewelry">Jewelry</li>
+      
+      <!-- More categories... -->
+    </ul>
+    <ul class="subcategory-list" id="subcategoryList">
+      <!-- Subcategories will populate here -->
+    </ul>
+  </div>
+</div>
+
+
+
+  <div class="overlay" id="overlay"></div>
+  <div class="mobile-drawer" id="mobileDrawer">
+    <button id="closeDrawer" class="drawer-close">&times;</button>
+    <a href="#">Home</a>
+    <a href="#">Shop</a>
+    <a href="#">About</a>
+    <a href="#">Contact</a>
+  </div>
+
+  <main class="content">
+    <section class="custom-section">
+      <div class="main-layout">
+        <div class="big-box">
+          <div class="image-slider">
+  <div class="slides" id="sliderTrack">
+    <img src="assets/images/image-3.webp" class="slide" alt="Slide 1">
+    <img src="assets/images/image-4.webp" class="slide" alt="Slide 2">
+    <img src="assets/images/image-6.webp" class="slide" alt="Slide 3">
+  </div>
+  <div class="dots" id="sliderDots">
+    <span class="dot active" data-index="0"></span>
+    <span class="dot" data-index="1"></span>
+    <span class="dot" data-index="2"></span>
+  </div>
+</div>
+
+
+
+        </div>
+
+        <div class="small-box-container">
+          <div class="small-box">
+            <h3>Small Box 1</h3>
+            <p>Some quick info here.</p>
+          </div>
+          <div class="small-box">
+            <h3>Small Box 2</h3>
+            <p>Some more info here.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <button class="icon-btn floating-btn left" id="floatingCategory">
+    <img src="assets/icons/categories.png" class="icon-img" alt="Category Icon">
+  </button>
+
+  <button class="icon-btn floating-btn right" id="floatingUser">
+    <img src="assets/icons/user.png" class="icon-img" alt="User Icon">
+  </button>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <h4>China Town Shop</h4>
+        <p>Your one-stop shop for quality and affordability.</p>
+      </div>
+
+      <div class="footer-row">
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Shop</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Customer Service</h4>
+          <ul>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Returns</a></li>
+            <li><a href="#">Shipping Info</a></li>
+            <li><a href="#">Track Order</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Follow Us</h4>
+          <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Shop</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-newsletter">
+        <h4>Subscribe</h4>
+        <form>
+          <input type="email" placeholder="Enter your email" />
+          <button type="submit">Join</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 China Town Shop. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
