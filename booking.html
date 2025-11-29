@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS - Add Booking</title>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+    <style>
+        body {
+            font-family: "Jost", sans-serif;
+            background: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1100px;
+            padding: 40px 40px 80px 40px;
+            margin: 20px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+            overflow-x: auto;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 15px;
+        }
+
+        .add-btn {
+            background: #e51e1e;
+            color: #fff;
+        }
+
+        .add-btn:hover {
+            background: #d61b1b;
+        }
+
+        .hide-btn {
+            background: #2eeb9c;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .hide-btn:hover {
+            background: #26d88a;
+        }
+
+        .form-container {
+            max-width: 700px;
+            margin: 0 auto 20px auto;
+            padding: 20px;
+            background: #fefefe;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        input,
+        select {
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: #e51e1e;
+            color: #fff;
+            font-size: 16px;
+            border-radius: 20px;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background: #df1c1c;
+        }
+
+        #statusMsg {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background: #fafafa;
+        }
+
+        .edit-btn,
+        .delete-btn {
+            padding: 4px 10px;
+            border-radius: 4px;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .edit-btn {
+            background: #4CAF50;
+        }
+
+        .delete-btn {
+            background: #f44336;
+            margin-left: 8px;
+        }
+
+        img.booking-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="top-bar">
+            <button class="add-btn" id="showFormBtn">Add Booking</button>
+        </div>
+
+        <!-- Booking List -->
+        <div id="bookingListContainer">
+            <h2>All Bookings</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>User Name</th>
+                        <th>Phone Number</th>
+                        <th>Product Name</th>
+                        <th>Product Code</th>
+                        <th>Quantity</th>
+                        <th>Advance Paid</th>
+                        <th>Image</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="bookingListBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Booking Form -->
+        <div class="form-container" id="bookingFormContainer">
+            <button class="hide-btn" id="hideFormBtn">Hide Form</button>
+            <h2>Add / Update Booking</h2>
+            <form id="bookingForm">
+                <div class="form-group">
+                    <label>User Name *</label>
+                    <input type="text" id="userName" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" id="phoneNumber" required placeholder="e.g. +8801XXXXXXXXX">
+                </div>
+
+                <div class="form-group">
+                    <label>Product Name *</label>
+                    <input type="text" id="productName" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Product Code</label>
+                    <input type="text" id="productCode">
+                </div>
+
+                <div class="form-group">
+                    <label>Quantity *</label>
+                    <input type="number" id="quantity" min="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Advance Payment *</label>
+                    <input type="number" id="advance" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Image URL</label>
+                    <input type="text" id="imageUrl" placeholder="Optional image URL">
+                </div>
+
+                <button class="submit-btn" type="submit">Save / Update Booking</button>
+            </form>
+            <p id="statusMsg"></p>
+        </div>
+    </div>
+
+    <script>
+        // =============== FIREBASE CONFIG ===============
+        const firebaseConfig = {
+            apiKey: "AIzaSyC-crKfYn4PUeQXLIMIpCrfOVuuUXb4dfs",
+            authDomain: "chinatownshop.firebaseapp.com",
+            projectId: "chinatownshop",
+            storageBucket: "chinatownshop.firebasestorage.app",
+            messagingSenderId: "444794925166",
+            appId: "1:444794925166:web:d5ce731d58c090fa49767f"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // =============== MAIN FUNCTION ===============
+        function initBookingPage() {
+            const showFormBtn = document.getElementById("showFormBtn");
+            const hideFormBtn = document.getElementById("hideFormBtn");
+            const bookingFormContainer = document.getElementById("bookingFormContainer");
+            const bookingListContainer = document.getElementById("bookingListContainer");
+            const bookingListBody = document.getElementById("bookingListBody");
+            const bookingForm = document.getElementById("bookingForm");
+            const statusMsg = document.getElementById("statusMsg");
+
+            let editingBooking = null;
+
+            showFormBtn.addEventListener("click", () => {
+                bookingFormContainer.style.display = "block";
+                bookingListContainer.style.display = "none";
+            });
+
+            hideFormBtn.addEventListener("click", () => {
+                bookingFormContainer.style.display = "none";
+                bookingListContainer.style.display = "block";
+                resetForm();
+            });
+
+            async function loadBookingList() {
+                bookingListBody.innerHTML = "";
+                const snap = await db.collection("bookings").orderBy("createdAt", "desc").get();
+                snap.forEach(doc => {
+                    const b = doc.data();
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td>${b.userName || ""}</td>
+                        <td>${b.phoneNumber || ""}</td>
+                        <td>${b.productName || ""}</td>
+                        <td>${b.productCode || ""}</td>
+                        <td>${b.quantity || ""}</td>
+                        <td>${b.advance || ""}</td>
+                        <td>${b.imageUrl ? `<img src="${b.imageUrl}" alt="Booking Image" class="booking-img">` : ""}</td>
+                        <td>
+                            <button class="edit-btn" data-id="${doc.id}">Edit</button>
+                            <button class="delete-btn" data-id="${doc.id}">Delete</button>
+                        </td>`;
+                    bookingListBody.appendChild(tr);
+                });
+            }
+
+            function resetForm() {
+                bookingForm.reset();
+                editingBooking = null;
+                statusMsg.textContent = "";
+            }
+
+            bookingForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const userName = document.getElementById("userName").value.trim();
+                const phoneNumber = document.getElementById("phoneNumber").value.trim();
+                const productName = document.getElementById("productName").value.trim();
+                const productCode = document.getElementById("productCode").value.trim();
+                const quantity = Number(document.getElementById("quantity").value);
+                const advance = Number(document.getElementById("advance").value);
+                const imageUrl = document.getElementById("imageUrl").value.trim();
+
+                if (!userName || !phoneNumber || !productName || !quantity || !advance) {
+                    statusMsg.textContent = "Please fill all required fields.";
+                    statusMsg.style.color = "red";
+                    return;
+                }
+
+                try {
+                    if (editingBooking) {
+                        await db.collection("bookings").doc(editingBooking).update({
+                            userName, phoneNumber, productName, productCode, quantity, advance, imageUrl,
+                            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        statusMsg.textContent = "Booking updated successfully!";
+                    } else {
+                        await db.collection("bookings").add({
+                            userName, phoneNumber, productName, productCode, quantity, advance, imageUrl,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        statusMsg.textContent = "New booking added successfully!";
+                    }
+                    statusMsg.style.color = "green";
+                    resetForm();
+                    loadBookingList();
+                    bookingFormContainer.style.display = "none";
+                    bookingListContainer.style.display = "block";
+                } catch (err) {
+                    console.error(err);
+                    statusMsg.textContent = "Error: " + err.message;
+                    statusMsg.style.color = "red";
+                }
+            });
+
+            document.addEventListener("click", async e => {
+                if (e.target.classList.contains("edit-btn")) {
+                    const id = e.target.dataset.id;
+                    const docSnap = await db.collection("bookings").doc(id).get();
+                    if (!docSnap.exists) return;
+                    const data = docSnap.data();
+                    document.getElementById("userName").value = data.userName || "";
+                    document.getElementById("phoneNumber").value = data.phoneNumber || "";
+                    document.getElementById("productName").value = data.productName || "";
+                    document.getElementById("productCode").value = data.productCode || "";
+                    document.getElementById("quantity").value = data.quantity || "";
+                    document.getElementById("advance").value = data.advance || "";
+                    document.getElementById("imageUrl").value = data.imageUrl || "";
+                    bookingFormContainer.style.display = "block";
+                    bookingListContainer.style.display = "none";
+                    editingBooking = id;
+                    statusMsg.textContent = "Editing booking...";
+                    statusMsg.style.color = "blue";
+                }
+
+                if (e.target.classList.contains("delete-btn")) {
+                    const id = e.target.dataset.id;
+                    if (!confirm("Are you sure you want to delete this booking?")) return;
+                    await db.collection("bookings").doc(id).delete();
+                    loadBookingList();
+                    alert("Booking deleted successfully!");
+                }
+            });
+
+            // Initialize
+            loadBookingList();
+        }
+
+        window.onload = initBookingPage;
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>POS Expenses</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- ================= FIREBASE SDK (v8) ================= -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+  <style>
+    body {
+      font-family: 'Jost', sans-serif;
+      background: #f5f6fa;
+      margin: 0;
+      color: #333;
+    }
+    h1 { text-align: center; font-weight: 600; margin-bottom: 15px; }
+    #openModal {
+      float: right;
+      background: #4CAF50; color: white; border: none; padding: 8px 14px;
+      border-radius: 6px; cursor: pointer;
+    }
+    #months { display: flex; flex-wrap: wrap; gap: 6px; margin: 15px 0; justify-content: center; }
+    .month-btn { padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; background: white; }
+    .month-btn.active { background: #4CAF50; color: white; border-color: #4CAF50; }
+    .summary { display: flex; justify-content: space-between; gap: 10px; margin: 15px 0; }
+    .card { flex: 1; background: white; border-radius: 10px; padding: 12px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .card strong { display: block; font-size: 1.3em; margin-top: 4px; }
+    #filterSelect { width: 100%; margin-bottom: 15px; padding: 8px; border-radius: 6px; border: 1px solid #ccc; }
+    #expenseList { background: white; padding: 10px; border-radius: 8px; }
+    .expense-item { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 8px 0; }
+    .expense-item:last-child { border-bottom: none; }
+    .empty { text-align: center; padding: 20px; color: #777; }
+    /* Modal */
+    #expenseModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+    .modal-content { background: white; padding: 20px; border-radius: 8px; width: 300px; display: flex; flex-direction: column; gap: 10px; }
+    input { padding: 8px; border: 1px solid #ccc; border-radius: 6px; }
+    button { cursor: pointer; }
+    #closeModal { background: #ccc; color: #333; }
+  </style>
+</head>
+<body>
+  <h1>Store Expenses</h1>
+  <button id="openModal">+ Add Expense</button>
+
+  <div id="months"></div>
+
+  <div class="summary">
+    <div class="card">
+      <span>Today's Expenses</span>
+      <strong id="summaryToday">0.00</strong>
+    </div>
+    <div class="card">
+      <span>This Month</span>
+      <strong id="summaryMonth">0.00</strong>
+    </div>
+    <div class="card">
+      <span>Last Month</span>
+      <strong id="summaryLast">0.00</strong>
+    </div>
+  </div>
+
+  <select id="filterSelect">
+    <option value="today">Today</option>
+    <option value="yesterday">Yesterday</option>
+    <option value="last7">Last 7 Days</option>
+    <option value="last15">Last 15 Days</option>
+    <option value="last20">Last 20 Days</option>
+    <option value="month">Full Month</option>
+  </select>
+
+  <div id="expenseList"></div>
+
+  <!-- Modal -->
+  <div id="expenseModal">
+    <div class="modal-content">
+      <h3>Add Expense</h3>
+      <form id="expenseForm">
+        <input type="text" name="cause" placeholder="Cause of Expense" required>
+        <input type="number" name="amount" placeholder="Amount" required>
+        <div style="display:flex;gap:6px;">
+          <button type="submit" style="flex:1;background:#4CAF50;color:white;border:none;padding:8px;border-radius:6px;">Save</button>
+          <button type="button" id="closeModal" style="flex:1;border:none;padding:8px;border-radius:6px;">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>

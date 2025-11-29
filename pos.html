@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POS Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="pos.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+</head>
+
+<body class="pos-page">
+  <div class="top-row">
+
+    <!-- Product Entry -->
+    <div class="card">
+      <h3 style="display: flex; justify-content: center;">Product Entry</h3>
+      <!-- <div class="product-search">
+        <input type="text" id="productSearch" placeholder="Enter product code or name">
+        <button onclick="findProduct()">Search</button>
+      </div> -->
+      <div class="product-search">
+        <input type="text" id="productSearch" placeholder="Enter product code or name" oninput="liveSearch(this.value)">
+        <div id="searchSuggestions" class="suggestions"></div>
+      </div>
+
+      <div class="table-wrapper">
+
+        <table id="productTable">
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Name</th>
+              <th>Sell Price</th>
+              <th>Qty</th>
+              <th>Discount</th>
+              <th>Total</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="cartTableBody">
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- Right Side -->
+    <div>
+      <!-- Customer Info -->
+      <div class="card">
+        <h3>Customer Info</h3>
+        <input type="text" id="customerName" placeholder="Customer Name" oninput="searchCustomer(this.value, 'name')"
+          autocomplete="off">
+        <div id="nameSuggestions" class="suggest"></div>
+
+        <input type="text" id="customerPhone" placeholder="Customer Phone" oninput="searchCustomer(this.value, 'phone')"
+          autocomplete="off">
+        <div id="phoneSuggestions" class="suggest"></div>
+
+      </div>
+
+
+      <!-- Summary -->
+      <div class="card">
+        <div class="summary-card">
+          <p>Total Amount: <span id="totalAmount">0</span></p>
+          <p>Discount Saved: <span id="discountApplied">0.00</span></p>
+          <p>Total Products: <span id="totalProducts">0</span></p>
+          <p>Final Price: <span id="finalPrice">0</span></p>
+        </div>
+
+
+        <!-- Payment Method -->
+        <div class="form-group">
+          <label for="paymentMethod">Payment Method:</label>
+          <select id="paymentMethod" class="select">
+            <option value="Cash">Cash</option>
+            <!-- <option value="Card">Card</option> -->
+            <option value="Mobile Banking">bKash</option>
+            <!-- <option value="Other">Pending</option> -->
+          </select>
+        </div>
+
+        <br>
+
+        <button onclick="confirmPayment()">Confirm Payment</button>
+      </div>
+
+
+
+    </div>
+  </div>
+
+  <!-- Available Products
+  <div class="card">
+    <h3>Available Products</h3>
+    <div id="productGrid" class="product-grid"></div>
+  </div> -->
+
+  <!-- Receipt -->
+  <div class="bottom-row">
+    <h3>Payment Receipt Preview</h3>
+    <div id="receipt">
+      <h2 style="text-align:center;">China Town</h2>
+      <p style="text-align:center;">B-block, Shajahanpur, Bus Stand</p>
+      <p style="text-align:center;">Phone: +8801333180868</p>
+      <hr>
+      <div id="receiptItems"></div>
+      <hr>
+      <p>Total: <span id="receiptTotal">0</span></p>
+      <p>Discount: <span id="receiptDiscount">0</span></p>
+      <p>Final Amount: <span id="receiptFinal">0</span></p>
+      <hr>
+      <p style="text-align:center;font-size:12px;"> Please Check Before Leave || No Refunds Allowed</p>
+    </div>
+  </div>
+
+
+  <!-- Product Info Modal -->
+  <div style="display: flex;;">
+    <div id="productModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeProductModal()">&times;</span>
+        <div id="modalBody">
+          <!-- Product info will be dynamically inserted here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</body>
+
+</html>

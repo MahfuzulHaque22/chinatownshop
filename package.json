@@ -1,0 +1,29 @@
+{
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "firebase": "^12.0.0",
+    "googleapis": "^156.0.0",
+    "node-fetch": "^3.3.2"
+  },
+  "name": "website",
+  "version": "1.0.0",
+  "description": "",
+  "main": "auth.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MahfuzulHaque22/chinatownshop.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/MahfuzulHaque22/chinatownshop/issues"
+  },
+  "homepage": "https://github.com/MahfuzulHaque22/chinatownshop#readme"
+}

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Responsive Floating Nav</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Jost&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.lordicon.com/lordicon.js"></script>
+    <link rel="stylesheet" href="common.css">
+    <style>
+        .about-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 2rem;
+            margin: 25px;
+            padding: 3rem 1rem;
+        }
+
+        .about-text {
+            flex: 1;
+        }
+
+        .about-text h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .about-text p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .about-image img {
+            width: 100%;
+            max-width: 450px;
+            border-radius: 12px;
+        }
+
+        .motivation-section {
+            background: linear-gradient(90deg, #860902, #ff3838);
+            text-align: center;
+            color: white;
+            padding: 0.5rem 0.4rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .story-text {
+            margin: 20px;
+        }
+
+        .story-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 2rem;
+            padding: 1rem 1rem;
+            align-items: center;
+        }
+
+        .story-img img {
+            width: 100%;
+            border-radius: 12px;
+        }
+
+        .partners-section {
+            padding: 3rem 1rem;
+            text-align: center;
+        }
+
+        .partners-section h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+
+
+        /* ===== Sliders ===== */
+        .slider-container {
+            overflow: hidden;
+            white-space: nowrap;
+            margin-top: 60px;
+        }
+
+        .slider {
+            display: inline-flex;
+            gap: 30px;
+            animation: scrollLeft 25s linear infinite;
+        }
+
+        .slider img {
+            height: 120px;
+            width: auto;
+            border-radius: 10px;
+        }
+
+        /* China brand slides left to right */
+        @keyframes scrollLeft {
+            0% {
+                transform: translateX(100%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* Local brand slides right to left */
+        .local-slider {
+            animation: scrollRight 25s linear infinite;
+        }
+
+        @keyframes scrollRight {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .find-us-section {
+            padding: 3rem 1rem;
+        }
+
+        .find-us-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+
+        .find-us-left {
+            flex: 1;
+        }
+
+        .find-us-right {
+            flex: 1;
+        }
+
+        .map-btn {
+            display: inline-block;
+            background: #e83a30;
+            color: white;
+            padding: 0.7rem 1.2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-top: 1rem;
+        }
+
+        .map-btn:hover {
+            background: #c32b25;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header-wrapper">
+        <header class="header" id="mainHeader">
+            <div class="logo">
+                <span class="logo-text">
+                    <sup><strong><b>CHINA TOWN</b></strong></sup><sub>Shop</sub>
+                </span>
+                <img src="assets/images/logo.png" alt="China Town Shop Logo" class="logo-img" />
+            </div>
+
+            <nav class="navbar" id="navbar">
+                <a href="index.html">Home</a>
+                <a href="brand.html">Brands</a>
+                <a href="products.html">Products</a>
+                <a href="wholesale.html">Wholesale</a>
+                <a href="make-a-wish.html">Make a Wish</a>
+            </nav>
+
+            <div class="controls">
+                <button class="icon-btn desktop-only" id="categoryBtnInside">
+                    <img src="assets/icons/categories.png" class="icon-img" alt="Category Icon">
+                </button>
+
+                <button class="icon-btn" id="themeToggleIcon">
+                    <img src="assets/icons/moon.png" alt="Toggle Theme" class="icon-img" id="themeIconImg">
+                </button>
+
+                <button class="icon-btn desktop-only" id="userBtnInside">
+                    <img src="assets/icons/user.png" class="icon-img" alt="User Icon">
+                </button>
+
+                <button class="icon-btn mobile-only" id="menuToggle">
+                    <img src="assets/icons/menu.png" class="icon-img" alt="Menu Icon">
+                </button>
+            </div>
+        </header>
+    </div>
+
+    <div id="loginPopup" class="login-popup">
+        <div class="popup-content">
+            <h2 style="color: rgb(247, 38, 38);">Explore More By Log In</h2>
+
+            <!-- Google Button -->
+            <button onclick="loginGoogle()">
+                <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="btn-icon">
+                Sign in with Google
+            </button>
+
+            <!-- Facebook Button -->
+            <button onclick="loginFacebook()">
+                <img src="assets/icons/facebook.png" alt="Facebook" class="btn-icon">
+                Sign in with Facebook
+            </button>
+
+            <p>verify with WhatsApp/Telegram before ordering</p>
+            <button onclick="closeLoginPopup()">Close</button>
+        </div>
+    </div>
+
+    <div id="userDrawer" class="user-drawer">
+        <button class="drawer-close-btn" onclick="closeUserDrawer()">×</button>
+        <div class="drawer-content">
+            <div class="profile-header">
+                <img id="drawerProfileImg" class="drawer-profile-img" src="" alt="Profile Picture" />
+                <div class="profile-info">
+                    <h3 id="drawerName">User Name</h3>
+                    <p id="drawerEmail">Email</p>
+                </div>
+            </div>
+
+            <!-- Account Button -->
+            <button class="save-btn" onclick="openAccountPopup()">Account</button>
+
+            <!-- New Drawer Options -->
+            <ul class="drawer-options">
+                <li><a href="userorder.html">Orders</a></li>
+                <li><a href="makewish.html">Wishlist</a></li>
+                <li><a href="support.html">Support</a></li>
+            </ul>
+
+            <!-- Logout Button -->
+            <button class="logout-btn" onclick="logoutUser()">Logout</button>
+        </div>
+    </div>
+
+    <!-- Account Popup -->
+    <div id="accountPopup" class="login-popup">
+        <div class="popup-content">
+            <!-- Close icon at top-right -->
+            <button class="popup-close-icon" onclick="closeAccountPopup()">×</button>
+            <h2>Account Details</h2>
+            <form id="userInfoForm" onsubmit="event.preventDefault(); saveUserInfo();">
+                <label for="userBirthday">Birthday:</label>
+                <input type="date" id="userBirthday" />
+
+                <label for="userGender">Gender:</label>
+                <select id="userGender">
+                    <option value="">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+
+                <label for="userPhone">Phone Number:</label>
+                <input id="userPhone" type="tel" placeholder="+880..." />
+
+                <label for="userAddress">Address:</label>
+                <textarea id="userAddress" placeholder="Enter your address"></textarea>
+
+                <div class="button-group">
+                    <button type="submit" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+    <div id="drawerOverlay" class="drawer-overlay" onclick="closeUserDrawer()"></div>
+
+    <div id="categoryDrawer">
+        <header>
+            Category
+            <button id="closeCategoryDrawer" aria-label="Close category drawer">&times;</button>
+        </header>
+
+        <div class="category-content">
+            <div id="subcategoryHeader">
+                <button id="backToMain">&larr;</button>
+                <span id="selectedCategoryName"></span>
+            </div>
+
+            <ul id="mainCategoryList"></ul>
+            <ul id="subcategoryList"></ul>
+        </div>
+    </div>
+
+    <div id="overlay" onclick="closeCategoryDrawerFn()"></div>
+    <button class="floating-close" onclick="closeCategoryDrawerFn()">×</button>
+
+
+
+    <!-- Floating Close Button -->
+    <button id="closeCategoryDrawer" class="floating-close" onclick="closeDrawer()">×</button>
+
+
+
+
+
+    <div id="drawerOverlay" class="drawer-overlay" onclick="closeUserDrawer()"></div>
+
+    <div class="mobile-drawer" id="mobileDrawer">
+        <button id="closeDrawer" class="drawer-close">&times;</button>
+        <a href="index.html">Home</a>
+        <a href="brand.html">Brands</a>
+        <a href="products.html">Products</a>
+        <a href="wholesale.html">Wholesale</a>
+        <a href="make-a-wish.html">Make a Wish</a>
+    </div>
+
+    <main class="content">
+        <!-- ABOUT US SECTION -->
+        <section class="about-us-section">
+            <div class="about-row">
+                <div class="about-text">
+                    <h2>About Us</h2>
+                    <p>
+                        Welcome to <strong>China Town Shop</strong> — a one-stop lifestyle and super shop connecting
+                        quality products from China and Bangladesh. Our goal is to bring you innovative, stylish, and
+                        affordable everyday essentials that make life simpler and more delightful.
+                    </p>
+                    <p>
+                        We collaborate with trusted partner brands from both China and Bangladesh to ensure top-quality,
+                        trend-forward items for our customers. Together, we aim to bridge international quality with
+                        local
+                        accessibility — creating a global shopping experience, right here at home.
+                    </p>
+                </div>
+                <div class="about-image">
+                    <img src="assets/images/about.png" alt="About China Town Shop" />
+                </div>
+            </div>
+        </section>
+
+        <!-- MOTIVATIONAL LINE -->
+        <section class="motivation-section">
+            <h2 class="motivation-text" style="color: white;">
+                “Your Lifestyle, Your Choice — Discover Joy in Every Aisle!”
+            </h2>
+        </section>
+
+        <!-- BRAND STORY / INFO GRID -->
+        <section class="brand-story">
+            <div class="story-grid">
+                <div class="story-text">
+                    <h3>Our Vision</h3>
+                    <p>
+                        We believe in creating a seamless shopping experience that combines international style
+                        with local spirit. Every product we offer reflects our commitment to quality, design,
+                        and everyday happiness.
+                    </p>
+                </div>
+                <div class="story-img">
+                    <img src="assets/images/about2.png" alt="Our Vision" />
+                </div>
+
+                <div class="story-img">
+                    <img src="assets/images/about3.png" alt="Collaboration" />
+                </div>
+                <div class="story-text">
+                    <h3>Global & Local Collaboration</h3>
+                    <p>
+                        Our partner brands from <strong>China</strong> bring world-class innovation and design,
+                        while our <strong>Bangladeshi local partners</strong> add cultural flair and craftsmanship.
+                        Together, they make China Town a truly global lifestyle destination.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PARTNER BRANDS -->
+        <section class="partners-section">
+            <h2>Our Partner Brands</h2>
+
+            <!-- ===== China Brand Slider ===== -->
+            <section class="slider-container">
+                <h3>Our Chinese Partner Brands</h3>
+                <div class="slider">
+                    <img src="assets/images/baby.jpg" alt="China Brand 1">
+                    <img src="assets/images/bag.jpg" alt="China Brand 2">
+                    <img src="assets/images/shoe.jpg" alt="China Brand 3">
+                    <img src="assets/images/eyeware.jpg" alt="China Brand 4">
+                </div>
+            </section>
+
+            <!-- ===== Local Brand Slider ===== -->
+            <section class="slider-container">
+                <h3>Our Local Partner Brands</h3>
+                <div class="slider local-slider">
+                    <img src="images/local1.png" alt="Local Brand 1">
+                    <img src="images/local2.png" alt="Local Brand 2">
+                    <img src="images/local3.png" alt="Local Brand 3">
+                    <img src="images/local4.png" alt="Local Brand 4">
+                </div>
+            </section>
+        </section>
+
+        <!-- FIND US SECTION -->
+        <section class="find-us-section">
+            <h2>Find Us At</h2>
+            <div class="find-us-row">
+                <div class="find-us-left">
+                    <h3>China Town Shop</h3>
+                    <p>
+                        📍 <strong>Our Location:</strong> 10 No. Circle, Rangpur City, Bangladesh
+                    </p>
+                    <p>
+                        🕒 <strong>Open Hours:</strong><br>
+                        Saturday – Thursday: 10:00 AM – 10:00 PM<br>
+                        Friday: 2:00 PM – 10:00 PM
+                    </p>
+                    <a href="https://maps.app.goo.gl/sDMvvKodhkzUz5Qq9" target="_blank" class="map-btn">View on Google
+                        Maps</a>
+                </div>
+                <div class="find-us-right">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1159.420254827088!2d89.24314519999999!3d25.7424292!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39e333fb8dc7e5ed%3A0x6cbac62c50443683!2sChina%20Town%20Shop!5e0!3m2!1sen!2sbd!4v1700000000000!5m2!1sen!2sbd"
+                        width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+    <button class="icon-btn floating-btn left" id="floatingCategory">
+        <img src="assets/icons/categories.png" class="icon-img" alt="Category Icon">
+    </button>
+
+    <button class="icon-btn floating-btn right" data-btn="userBtnInside" id="floatingUser">
+        <img src="assets/icons/user.png" class="icon-img" alt="User Icon">
+    </button>
+
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h4>China Town Shop</h4>
+                <p>Your one-stop shop for quality and affordability.</p>
+            </div>
+
+            <div class="footer-row">
+                <div class="footer-col" style="display: flex; justify-content:center; align-items: center;">
+                    <img src="assets/images/logo.png" style="width: 140px; height:140px;">
+                </div>
+
+
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="brand.html">Brand</a></li>
+                        <li><a href="products.html">Product</a></li>
+                        <li><a href="wholesale.html">Wholesale</a></li>
+                        <li><a href="wish.html">Make a Wish</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Customer Service</h4>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">Shipping Info</a></li>
+                        <li><a href="#">Track Order</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Follow Us</h4>
+                    <div class="social-icons">
+                        <a href="https://www.facebook.com/profile.php?id=61573035666869">
+                            <lord-icon src="https://cdn.lordicon.com/lplofcfe.json" trigger="hover"
+                                colors="primary:#e83a30,secondary:#1663c7">
+                            </lord-icon>
+                        </a>
+                        <a href="https://wa.me/+8801333180868">
+                            <lord-icon src="https://cdn.lordicon.com/dnphlhar.json" trigger="hover"
+                                colors="primary:#16c72e,secondary:#e83a30">
+                            </lord-icon>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="footer-newsletter">
+                <h4>Subscribe</h4>
+                <form>
+                    <input type="email" placeholder="Enter your email" />
+                    <button type="submit">Join</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 China Town Shop. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="route.js" defer></script>
+
+
+    <script type="module" src="auth.js"></script>
+
+
+
+
+
+</body>
+
+</html>

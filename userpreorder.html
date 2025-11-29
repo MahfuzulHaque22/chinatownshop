@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pre-Order - China Town Shop</title>
+    <link rel="stylesheet" href="products.css" />
+    <link rel="stylesheet" href="common.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Jost&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
+    <script src="https://cdn.lordicon.com/lordicon.js"></script>
+
+    <!-- ================= FIREBASE SDK ================= -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyC-crKfYn4PUeQXLIMIpCrfOVuuUXb4dfs",
+            authDomain: "chinatownshop.firebaseapp.com",
+            projectId: "chinatownshop",
+            storageBucket: "chinatownshop.firebasestorage.app",
+            messagingSenderId: "444794925166",
+            appId: "1:444794925166:web:d5ce731d58c090fa49767f"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+    </script>
+
+    <style>
+        .checkout-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .checkout-item {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            border: 1px solid #ddd;
+            padding: 12px;
+            border-radius: 10px;
+            background: var(--card-bg, #fff);
+        }
+
+        .checkout-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .confirm-btn,
+        #updateUserBtn {
+            display: block;
+            width: 100%;
+            max-width: 320px;
+            margin: 1rem auto;
+            padding: 12px;
+            background: red;
+            border: none;
+            color: #fff;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .confirm-btn:hover,
+        #updateUserBtn:hover {
+            background: darkred;
+        }
+
+        .user-details {
+            max-width: 900px;
+            margin: 1rem auto;
+            padding: 1rem;
+            background: var(--card-bg, #fff);
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .user-details p {
+            margin: 0.25rem 0;
+        }
+
+        .user-details input {
+            width: 100%;
+            max-width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-top: 4px;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 600px) {
+            .checkout-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .checkout-item img {
+                width: 100%;
+                height: auto;
+            }
+
+            .confirm-btn,
+            #updateUserBtn {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="main-header">
+        <div class="logo" onclick="window.location.href='products.html'" style="cursor: pointer;">
+            <span class="logo-text">
+                <sup><strong><b>CHINA TOWN</b></strong></sup><sub>Shop</sub>
+            </span>
+            <img src="assets/images/logo.png" alt="China Town Shop Logo" class="logo-img" />
+        </div>
+    </header>
+
+    <main>
+        <h1 style="text-align:center; margin-top:20px;">Pre-Order</h1>
+
+        <!-- Logged in user info -->
+        <div id="userDetails" class="user-details">
+            <h3>Your Info</h3>
+            <p><strong>Name:</strong> <span id="userName"></span></p>
+            <p><strong>Email:</strong> <span id="userEmail"></span></p>
+            <p>
+                <strong>Phone:</strong>
+                <input type="text" id="userPhone" placeholder="Enter phone number" />
+            </p>
+            <p>
+                <strong>Address:</strong>
+                <input type="text" id="userAddress" placeholder="Enter address" />
+            </p>
+            <button id="updateUserBtn">Save / Update Info</button>
+        </div>
+
+        <!-- Product being pre-ordered -->
+        <div id="checkoutList" class="checkout-list"></div>
+
+        <button id="confirmBtn" class="confirm-btn">Confirm Pre-Order</button>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2025 China Town Shop. All rights reserved.</p>
+    </footer>
+
+    <script>
+        let currentUser = null;
+        let currentUserData = null;
+
+        // ================== CN ID Generator for Preorders ==================
+        async function generatePreorderNumber() {
+            const counterRef = db.collection("counters").doc("preorders");
+
+            const newNumber = await db.runTransaction(async (transaction) => {
+                const counterDoc = await transaction.get(counterRef);
+
+                if (!counterDoc.exists) {
+                    transaction.set(counterRef, { lastNumber: 1 });
+                    return 1;
+                }
+
+                const updated = (counterDoc.data().lastNumber || 0) + 1;
+                transaction.update(counterRef, { lastNumber: updated });
+                return updated;
+            });
+
+            // Format as CN0001
+            return `CN${String(newNumber).padStart(4, "0")}`;
+        }
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            const preorderItem = JSON.parse(localStorage.getItem("preOrderItem") || "null");
+            const checkoutList = document.getElementById("checkoutList");
+            const confirmBtn = document.getElementById("confirmBtn");
+            const updateUserBtn = document.getElementById("updateUserBtn");
+
+            if (!preorderItem) {
+                checkoutList.innerHTML = "<p style='text-align:center;'>No pre-order item found.</p>";
+                confirmBtn.style.display = "none";
+                return;
+            }
+
+            // Render product details
+            checkoutList.innerHTML = `
+            <div class="checkout-item">
+                <img src="${preorderItem.image}" alt="${preorderItem.name}">
+                <div class="item-info">
+                    <strong>${preorderItem.name}</strong>
+                    <div>Code: ${preorderItem.code}</div>
+                    <div><em>Pre-Order Request</em></div>
+                </div>
+            </div>
+        `;
+
+            // Firebase auth check
+            firebase.auth().onAuthStateChanged(async (user) => {
+                if (!user) {
+                    alert("Please login to place a pre-order.");
+                    window.location.href = "index.html";
+                    return;
+                }
+
+                currentUser = user;
+
+                // Load user profile from Firestore
+                const userDoc = await db.collection("users").doc(user.uid).get();
+                currentUserData = userDoc.exists ? userDoc.data() : {};
+
+                // Fill user info in fields
+                document.getElementById("userName").innerText = currentUser.displayName || currentUserData.name || "Not set";
+                document.getElementById("userEmail").innerText = currentUser.email;
+                document.getElementById("userPhone").value = currentUserData.phone || "";
+                document.getElementById("userAddress").value = currentUserData.address || "";
+
+                // Enable confirm button only if phone & address are filled
+                function checkUserInfo() {
+                    const phone = document.getElementById("userPhone").value.trim();
+                    const address = document.getElementById("userAddress").value.trim();
+                    confirmBtn.disabled = !phone || !address;
+                }
+                checkUserInfo();
+
+                // Update button handler
+                updateUserBtn.addEventListener("click", async () => {
+                    const phone = document.getElementById("userPhone").value.trim();
+                    const address = document.getElementById("userAddress").value.trim();
+
+                    if (!phone || !address) {
+                        alert("Please enter both phone number and address.");
+                        return;
+                    }
+
+                    try {
+                        await db.collection("users").doc(user.uid).set(
+                            { phone, address },
+                            { merge: true }
+                        );
+                        currentUserData.phone = phone;
+                        currentUserData.address = address;
+                        alert("✅ Info updated successfully!");
+                        checkUserInfo();
+                    } catch (err) {
+                        console.error("Error updating user info:", err);
+                        alert("❌ Failed to update info. Try again.");
+                    }
+                });
+
+                document.getElementById("userPhone").addEventListener("input", checkUserInfo);
+                document.getElementById("userAddress").addEventListener("input", checkUserInfo);
+            });
+
+            // ================== Confirm Preorder ==================
+            confirmBtn.addEventListener("click", async () => {
+                if (!currentUser) return;
+
+                const phone = document.getElementById("userPhone").value.trim();
+                const address = document.getElementById("userAddress").value.trim();
+
+                if (!phone || !address) {
+                    alert("❌ Please enter phone number and address before placing a preorder.");
+                    return;
+                }
+
+                try {
+                    // Generate permanent CN ID
+                    const preorderNumber = await generatePreorderNumber();
+
+                    // Save preorder with CN ID as document ID
+                    await db.collection("preorders").doc(preorderNumber).set({
+                        userId: currentUser.uid,
+                        userName: currentUser.displayName || currentUserData?.name || "",
+                        userEmail: currentUser.email,
+                        userPhone: phone,
+                        userAddress: address,
+                        productId: preorderItem.id,
+                        productCode: preorderItem.code,
+                        productName: preorderItem.name,
+                        productImage: preorderItem.image,
+                        preorderNumber, // 👈 human-friendly ID
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+
+                    alert(`✅ Pre-order placed successfully! Your Preorder No: ${preorderNumber}`);
+                    localStorage.removeItem("preOrderItem");
+                    window.location.href = "products.html";
+                } catch (err) {
+                    console.error("Error saving preorder:", err);
+                    alert("❌ Failed to save preorder. Try again.");
+                }
+            });
+
+        });
+    </script>
+
+</body>
+
+</html>

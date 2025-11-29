@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>China Town Shop</title>
+    <link rel="stylesheet" href="products.css" />
+    <!-- <link rel="stylesheet" href="common.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Jost&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
+    <script src="https://cdn.lordicon.com/lordicon.js"></script>
+    <link rel="stylesheet" href="common.css">
+
+
+
+    <!-- Firebase and Auth Script -->
+    <script type="module" src="firebase-init.js"></script>
+    <script type="module" src="auth.js"></script>
+
+
+    <style>
+        .product-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .product-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .col img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+
+        .col-images .slide-thumbs {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .col-images .slide-thumbs img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        .price-section {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .price-section s {
+            color: #999;
+            margin-right: 8px;
+        }
+
+        .discounted {
+            color: green;
+            font-weight: bold;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .qty-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ccc;
+            background: #f8f8f8;
+            cursor: pointer;
+        }
+
+        .qty-btn:hover {
+            background: #eee;
+        }
+
+        #qtyInput {
+            width: 50px;
+            text-align: center;
+            margin: 0 5px;
+        }
+
+        .meta p {
+            margin: 5px 0;
+        }
+
+        .in-stock {
+            color: green;
+            font-weight: bold;
+        }
+
+        .out-stock {
+            color: red;
+            font-weight: bold;
+        }
+
+        .description {
+            padding: 20px 0;
+            border-top: 1px solid #eee;
+        }
+
+
+        .btn-cart,
+        .btn-buy {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-cart {
+            background: #e83a30;
+            color: #fff;
+        }
+
+        .btn-buy {
+            background: green;
+            color: #fff;
+        }
+
+        .btn-cart:hover {
+            background: #c72b22;
+        }
+
+        .btn-buy:hover {
+            background: #0d7a0d;
+        }
+
+        /* The main container that holds all variants (side by side row) */
+        .variant-options {
+            display: flex;
+            flex-direction: column;
+            /* row layout */
+            gap: 20px;
+            /* space between variants */
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        /* Each variant block (inside, options should be stacked vertically) */
+        .variant {
+            display: flex;
+            flex-direction: row;
+            /* column layout */
+            gap: 6px;
+            min-width: 120px;
+            /* keeps width consistent */
+            flex-shrink: 0;
+            /* prevents squishing on scroll */
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+
+
+        .variant-options::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .variant-options::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
+
+
+
+        /* ✅ Responsive adjustments */
+        @media (max-width: 992px) {
+            .product-layout {
+                grid-template-columns: 1fr 1fr;
+                /* Tablet: 2 columns */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .product-layout {
+                grid-template-columns: 1fr;
+                /* Mobile: stack in row */
+                display: flex;
+                flex-direction: column;
+            }
+
+            .col-images .slide-thumbs img {
+                width: 50px;
+                height: 50px;
+            }
+
+            .variant-btn-wrapper {
+                flex-direction: column;
+                /* stack inside variants */
+                text-align: center;
+            }
+
+            .col-purchase {
+                margin-top: 20px;
+            }
+
+            .btn-cart,
+            .btn-buy {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* ✅ Quantity Selector Styling */
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .qty-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border-color, #ccc);
+            background: var(--bg-color, #f8f8f8);
+            color: var(--text-color, #333);
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-btn:hover {
+            background: var(--hover-bg, #eee);
+            border-color: var(--hover-border, #bbb);
+        }
+
+        #qtyInput {
+            width: 60px;
+            height: 36px;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 600;
+            border: 1px solid var(--border-color, #ccc);
+            border-radius: 6px;
+            background: var(--bg-color, #fff);
+            color: var(--text-color, #000);
+            outline: none;
+        }
+
+        /* ✅ Dark Mode Support */
+        [data-theme="dark"] .qty-btn {
+            background: #333;
+            color: #fff;
+            border-color: #555;
+        }
+
+        [data-theme="dark"] .qty-btn:hover {
+            background: #444;
+            border-color: #777;
+        }
+
+        [data-theme="dark"] #qtyInput {
+            background: #222;
+            color: #fff;
+            border-color: #555;
+        }
+
+        /* ✅ Responsive adjustments */
+        @media (max-width: 480px) {
+            .quantity-selector {
+                gap: 5px;
+            }
+
+            .qty-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+
+            #qtyInput {
+                width: 50px;
+                height: 32px;
+                font-size: 0.9rem;
+            }
+        }
+
+
+        .product-detail-card {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .col-images {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .slider {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        .slide img {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .slide-thumbs {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .slide-thumbs img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .slide-thumbs img.active {
+            border-color: #e83a30;
+        }
+
+        .col-info {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .wholesale-box {
+            background: var(--bg-color);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .qty-controls button {
+            width: 36px;
+            height: 36px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: #f8f8f8;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .qty-controls input {
+            width: 60px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .btn-cart,
+        .btn-buy {
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            margin-right: 10px;
+        }
+
+        .btn-cart {
+            background: #e83a30;
+            color: #fff;
+        }
+
+        .btn-cart:hover {
+            background: #c72b22;
+        }
+
+        .btn-buy {
+            background: green;
+            color: #fff;
+        }
+
+        .btn-buy:hover {
+            background: #0d7a0d;
+        }
+
+        @media(max-width:768px) {
+            .product-detail-card {
+                flex-direction: column;
+            }
+        }
+
+
+        .btn-contact {
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            background: #25D366;
+            /* WhatsApp green */
+            color: #fff;
+        }
+
+        .btn-contact:hover {
+            background: #1ebe57;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <header class="main-header">
+
+        <div class="logo" onclick="window.location.href='wholesale.html'" style="cursor: pointer;">
+            <span class="logo-text">
+                <sup><strong><b>CHINA TOWN</b></strong></sup><sub>Shop</sub>
+            </span>
+            <img src="assets/images/logo.png" alt="China Town Shop Logo" class="logo-img" />
+        </div>
+
+
+
+        <div class="search-row">
+            <input type="text" id="searchInputDesktop" placeholder="Search products..." />
+        </div>
+
+
+        <div class="icons">
+            <span class="icon" id="cartIcon" onclick="location.href='cart.html'">
+                <lord-icon src="https://cdn.lordicon.com/ggirntso.json" trigger="hover"
+                    colors="primary:#e83a30,secondary:#e83a30">
+                </lord-icon>
+                <span class="badge hide" id="cartCount">0</span>
+            </span>
+            <span class="icon" id="favIcon" onclick="location.href='wishlist.html'">
+                <lord-icon src="https://cdn.lordicon.com/nvsfzbop.json" trigger="hover"
+                    colors="primary:#e83a30,secondary:#e83a30">
+                </lord-icon>
+
+                <span class="badge hide" id="favCount">0</span>
+            </span>
+
+            <span class="icon" id="themeToggleIcon">
+                <img id="themeIconImg" src="assets/icons/moon.png" alt="Theme Icon" width="24" height="24" />
+            </span>
+
+            <span class="icon" id="userArea">
+                <lord-icon src="https://cdn.lordicon.com/kdduutaw.json" trigger="hover"
+                    colors="primary:#c71f16,secondary:#e83a30" onclick="toggleLoginPopup()"> </lord-icon>
+            </span>
+
+
+
+        </div>
+
+
+
+    </header>
+
+
+
+    <div class="midd">
+        <div class="mobile-search mobile-only" style="position: fixed; z-index: 100;top: 60px;">
+            <input type="text" id="searchInputMobile" placeholder="Search products..." />
+        </div>
+    </div>
+    <!-- Mobile search bar (only visible on small screens) -->
+
+
+    <div class="main-content">
+        <!-- LEFT COLUMN: Categories -->
+        <aside class="left-sidebar">
+            <h3>Categories</h3>
+            <div id="categoryGrid" class="category-grid"></div>
+        </aside>
+
+        <!-- RIGHT COLUMN: Products -->
+        <section class="right-content">
+            <main>
+                <div id="loadingSpinner" class="spinner"></div>
+                <div class="product-details" id="productDetails">
+                    Loading...
+                </div>
+                <div id="productGrid" class="product-grid"></div>
+                <button id="loadMoreBtn" class="load-more-btn">Load More</button>
+            </main>
+
+            <!-- Floating Category Button (Mobile only) -->
+            <button id="openCategoryDrawer" class="floating-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div id="overlay" class="hidden"></div>
+
+
+            <!-- Mobile Category Drawer -->
+            <div id="categoryDrawer" class="category-drawer">
+                <div class="drawer-header">
+                    <span id="drawerBack" class="hidden"><i class="fas fa-arrow-left"></i></span>
+                    <span id="drawerTitle">Categories</span>
+                    <span id="drawerClose"><i class="fas fa-times"></i></span>
+                </div>
+                <div id="drawerContent" class="drawer-content"></div>
+            </div>
+
+
+            <!-- Subcategory Drawer (Desktop only, initially hidden) -->
+            <div id="subCategoryDrawer" class="subcategory-drawer hidden">
+                <div class="drawer-header">
+                    <span id="subDrawerTitle">Subcategories</span>
+                    <span id="subDrawerClose"><i class="fas fa-times"></i></span>
+                </div>
+                <div id="subDrawerContent" class="drawer-content"></div>
+            </div>
+
+
+            <!--  LOGIN POPUP -->
+            <div id="loginPopup" class="login-popup hidden">
+                <div class="popup-content">
+                    <h2 style="color: rgb(247, 38, 38);">Explore More By Log In</h2>
+
+                    <!-- Google Button -->
+                    <button onclick="loginGoogle()">
+                        <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="btn-icon">
+                        Sign in with Google
+                    </button>
+
+                    <!-- Facebook Button -->
+                    <button onclick="loginFacebook()">
+                        <img src="assets/icons/facebook.png" alt="Facebook" class="btn-icon">
+                        Sign in with Facebook
+                    </button>
+
+                    <p>verify with WhatsApp/Telegram before ordering</p>
+                    <button onclick="closeLoginPopup()">Close</button>
+                </div>
+
+            </div>
+
+            <!-- USER DRAWER -->
+
+            <div id="userDrawer" class="user-drawer">
+                <button class="drawer-close-btn" onclick="closeUserDrawer()">×</button>
+                <div class="drawer-content">
+                    <div class="profile-header">
+                        <img id="drawerProfileImg" class="drawer-profile-img" src="" alt="Profile Picture" />
+                        <div class="profile-info">
+                            <h3 id="drawerName">User Name</h3>
+                            <p id="drawerEmail">Email</p>
+                        </div>
+                    </div>
+
+                    <!-- Account Button -->
+                    <button class="save-btn" onclick="openAccountPopup()">Account</button>
+
+                    <!-- New Drawer Options -->
+                    <ul class="drawer-options">
+                        <li><a href="userorder.html">Orders</a></li>
+                        <li><a href="makewish.html">Wishlist</a></li>
+                        <li><a href="support.html">Support</a></li>
+                    </ul>
+
+                    <!-- Logout Button -->
+                    <button class="logout-btn" onclick="logoutUser()">Logout</button>
+                </div>
+            </div>
+
+
+            <!-- Account Popup -->
+            <div id="accountPopup" class="login-popup">
+                <div class="popup-content">
+                    <!-- Close icon at top-right -->
+                    <button class="popup-close-icon" onclick="closeAccountPopup()">×</button>
+                    <h2>Account Details</h2>
+                    <form id="userInfoForm" onsubmit="event.preventDefault(); saveUserInfo();">
+                        <label for="userBirthday">Birthday:</label>
+                        <input type="date" id="userBirthday" />
+
+                        <label for="userGender">Gender:</label>
+                        <select id="userGender">
+                            <option value="">Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+
+                        <label for="userPhone">Phone Number:</label>
+                        <input id="userPhone" type="tel" placeholder="+880..." />
+
+                        <label for="userAddress">Address:</label>
+                        <textarea id="userAddress" placeholder="Enter your address"></textarea>
+
+                        <div class="button-group">
+                            <button type="submit" class="save-btn">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+
+            <footer class="site-footer">
+                <p>&copy; 2025 China Town Shop. All rights reserved.</p>
+            </footer>
+        </section>
+    </div>
+
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        const spreadsheetId = "1nr6fXL6wbUHlXZaiAQYEFBWLMAauevT8zOtMfXbHMYw";
+        const sheetName = "Sheet1";
+        const apiKey = "AIzaSyC-crKfYn4PUeQXLIMIpCrfOVuuUXb4dfs";
+
+        const allSheetsAPI = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}?includeGridData=true&key=${apiKey}`;
+
+        fetch(allSheetsAPI)
+            .then(res => res.json())
+            .then(data => {
+                let mergedProducts = [];
+                data.sheets.forEach(sheet => {
+                    const grid = sheet.data?.[0]?.rowData || [];
+                    if (!grid.length) return;
+                    const headers = (grid[0].values || []).map(v => v.formattedValue || "");
+                    const rows = grid.slice(1);
+                    rows.forEach(row => {
+                        const obj = {};
+                        (row.values || []).forEach((cell, i) => obj[headers[i]] = cell.formattedValue || "");
+                        mergedProducts.push(obj);
+                    });
+                });
+
+                const product = mergedProducts.find(p => p.id === productId);
+                if (!product) {
+                    document.getElementById("productDetails").innerHTML = "<p>❌ Product not found.</p>";
+                    return;
+                }
+
+                window.currentProduct = product;
+
+                const productImages = [
+                    product.image,
+                    product.slide1,
+                    product.slide2,
+                    product.slide3,
+                    product.slide4,
+                    product.slide5,
+                    product.slide6
+                ].filter(img => img); // remove empty
+
+                const slidesHtml = productImages.map((img, idx) => `
+            <div class="slide ${idx === 0 ? 'active' : ''}">
+                <img src="${img}" alt="${product.name} Image ${idx + 1}" />
+            </div>
+        `).join('');
+
+                const thumbsHtml = productImages.map((img, idx) => `
+            <img src="${img}" class="thumb ${idx === 0 ? 'active' : ''}" onclick="showSlide(${idx})" />
+        `).join('');
+
+                document.getElementById("productDetails").innerHTML = `
+        <div class="product-detail-card">
+            <div class="col-images">
+                <div class="slider">
+                    ${slidesHtml}
+                </div>
+                <div class="slide-thumbs">
+                    ${thumbsHtml}
+                </div>
+            </div>
+            <div class="col-info">
+                <h2 class="detail-name">${product.name}</h2>
+
+                <div class="wholesale-box">
+                    <p><strong>Wholesale Price:</strong> ৳${product.wholesale_price || "N/A"}</p>
+                    <p><strong>MOQ:</strong> ${product.wholesale_moq || "-"}</p>
+                    <p><strong>Code:</strong> ${product.code || "N/A"}</p>
+                </div>
+
+                <div class="qty-controls">
+                    <button onclick="updateWholesaleQty(-1)">-</button>
+                    <input type="number" id="qtyInput" value="${product.wholesale_moq || 1}" min="${product.wholesale_moq || 1}" />
+                    <button onclick="updateWholesaleQty(1)">+</button>
+                </div>
+
+                <button class="btn-contact" onclick="contactNow()">Contact Now</button>
+
+            </div>
+
+              
+        </div>
+
+        <div class="more">
+    <h3 style="display:flex; justify-content:center";>You May Also Like </h3>
+        `;
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById("productDetails").innerHTML = "<p>⚠️ Failed to load product.</p>";
+            });
+
+        // ================== FUNCTIONS ==================
+
+
+        function contactNow() {
+            const product = window.currentProduct;
+            if (!product) return;
+
+            const phoneNumber = "+8801333180868"; // Replace with your WhatsApp number in international format
+            const message = `Hi, I would like to purchase: ${product.name} (Code: ${product.code}). Could you provide more details?`;
+            const encodedMessage = encodeURIComponent(message);
+            const url = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+
+            window.open(url, "_blank");
+        }
+
+
+        // Slider
+        let currentSlide = 0;
+        function showSlide(index) {
+            const slides = document.querySelectorAll(".slider .slide");
+            const thumbs = document.querySelectorAll(".slide-thumbs img");
+            slides.forEach((s, i) => s.classList.toggle("active", i === index));
+            thumbs.forEach((t, i) => t.classList.toggle("active", i === index));
+            currentSlide = index;
+        }
+
+        // Qty selector
+        function updateWholesaleQty(change) {
+            const qtyInput = document.getElementById("qtyInput");
+            const moq = parseInt(window.currentProduct.wholesale_moq) || 1;
+            let value = parseInt(qtyInput.value) || moq;
+            value = Math.max(moq, value + change);
+            qtyInput.value = value;
+        }
+
+        // Add to Cart
+        function addToCart() {
+            const product = window.currentProduct;
+            const qty = parseInt(document.getElementById("qtyInput").value) || parseInt(product.wholesale_moq) || 1;
+            const price = parseFloat(product.wholesale_price) || 0;
+
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const existing = cart.find(c => c.id === product.id);
+
+            if (existing) {
+                existing.quantity += qty;
+            } else {
+                cart.push({
+                    id: product.id,
+                    code: product.code,
+                    name: product.name,
+                    image: product.image,
+                    price: price,
+                    quantity: qty,
+                    moq: parseInt(product.wholesale_moq) || 1
+                });
+            }
+
+            localStorage.setItem("cart", JSON.stringify(cart));
+            alert("✅ Added to cart!");
+            document.getElementById("cartCount").innerText = cart.length;
+            document.getElementById("cartCount").classList.remove("hide");
+        }
+
+        // Buy Now
+        function buyNow() {
+            addToCart();
+            window.location.href = "checkout.html";
+        }
+
+
+    </script>
+
+
+    <!-- ================= FIREBASE SDK ================= -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+    <script type="module" src="firebase-init.js"></script>
+    <script src="wholesale.js"></script>
+    <script>
+        // ✅ Update Qty but never go below MOQ
+        function updateWholesaleQty(change) {
+            const qtyInput = document.getElementById("qtyInput");
+            const moq = parseInt(product.wholesale_moq) || 1;
+            let value = parseInt(qtyInput.value) || moq;
+            value = Math.max(moq, value + change);
+            qtyInput.value = value;
+        }
+
+        // ✅ Override addToCart for wholesale
+        function addToCart() {
+            const qty = parseInt(document.getElementById("qtyInput").value) || (parseInt(product.wholesale_moq) || 1);
+            const price = parseFloat(product.wholesale_price) || 0;
+
+            let cartData = [{
+                id: product.id,
+                code: product.code,
+                name: product.name,
+                image: product.image,
+                price: price,
+                finalPrice: price,
+                quantity: qty,
+                moq: parseInt(product.wholesale_moq) || 1
+            }];
+
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const existing = cart.find(c => c.id === product.id);
+
+            if (existing) {
+                existing.quantity += qty;
+            } else {
+                cart.push(cartData[0]);
+            }
+
+            localStorage.setItem("cart", JSON.stringify(cart));
+            showCartPopup(product.name);
+            document.getElementById("cartCount").innerText = cart.length;
+            document.getElementById("cartCount").classList.remove("hide");
+        }
+
+        // ✅ Override Buy Now for wholesale
+        function buyNow() {
+            const qty = parseInt(document.getElementById("qtyInput").value) || (parseInt(product.wholesale_moq) || 1);
+            const price = parseFloat(product.wholesale_price) || 0;
+
+            let checkoutItems = [{
+                id: product.id,
+                code: product.code,
+                name: product.name,
+                image: product.image,
+                price: price,
+                finalPrice: price,
+                quantity: qty,
+                moq: parseInt(product.wholesale_moq) || 1
+            }];
+
+            localStorage.setItem("checkoutItems", JSON.stringify(checkoutItems));
+            window.location.href = "buynow.html";
+        }
+
+    </script>
+    <script type="module" src="authproducts.js"></script>
+</body>
+
+</html>

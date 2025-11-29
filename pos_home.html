@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POS Dashboard</title>
+  <link rel="stylesheet" href="pos_home.css">
+  <link rel="stylesheet" href="order.css">
+  <link href="https://fonts.googleapis.com/css2?family=Jost&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
+  <script src="https://cdn.lordicon.com/lordicon.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+  <div class="dashboard">
+
+    <!-- Sidebar -->
+    <aside class="sidebar expanded">
+      <div class="sidebar-toggle" onclick="toggleSidebar()">☰</div>
+      <ul class="nav">
+        <li>
+          <a href="#" data-page="home">
+            <span class="icon"><lord-icon src="https://cdn.lordicon.com/jeuxydnh.json" trigger="hover" stroke="bold"
+                colors="primary:#c71f16,secondary:#e83a30" style="width:25px;height:25px; margin-right: 10px;">
+              </lord-icon></span>
+            <span class="text">Home</span>
+          </a>
+        </li>
+
+        <!-- Products Dropdown -->
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle">
+            <span class="icon"><lord-icon src="https://cdn.lordicon.com/uisoczqi.json" trigger="hover" stroke="bold"
+                colors="primary:#c71f16,secondary:#e83a30" style="width:25px;height:25px; margin-right: 10px;">
+              </lord-icon></span>
+            <span class="text">Products</span>
+          </a>
+          <ul class="submenu">
+            <li><a href="#" data-page="add">Add Product</a></li>
+            <li><a href="#" data-page="stock">Stock</a></li>
+          </ul>
+        </li>
+
+        <!-- Customers Dropdown -->
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle">
+            <span class="icon"><lord-icon src="https://cdn.lordicon.com/vqhlecvy.json" trigger="hover" stroke="bold"
+                colors="primary:#c71f16,secondary:#e83a30" style="width:25px;height:25px; margin-right: 10px;">
+              </lord-icon></span>
+            <span class="text">Contacts</span>
+          </a>
+          <ul class="submenu">
+            <li><a href="#" data-page="customer">Customer</a></li>
+            <li><a href="#" data-page="supplier">Supplier</a></li>
+          </ul>
+        </li>
+
+        <li>
+          <a href="#" data-page="pos">
+            <span class="icon"><lord-icon src="https://cdn.lordicon.com/ytklkgsc.json" trigger="hover"
+                colors="primary:#c71f16,secondary:#e83a30" style="width:25px;height:25px;"></lord-icon></span>
+            <span class="text">POS</span>
+          </a>
+        </li>
+
+        <li>
+          <a href="#" data-page="sale">
+            <span class="icon"><lord-icon src="https://cdn.lordicon.com/oqhqyeud.json" trigger="hover"
+                colors="primary:#c71f16,secondary:#e83a30" style="width:25px;height:25px"></lord-icon></span>
+            <span class="text">Sale</span>
+          </a>
+        </li>
+
+
+         <li>
+          <a href="#" data-page="expences">
+            <span class="icon"><lord-icon src="https://cdn.lordicon.com/oqhqyeud.json" trigger="hover"
+                colors="primary:#c71f16,secondary:#e83a30" style="width:25px;height:25px"></lord-icon></span>
+            <span class="text">Expences</span>
+          </a>
+        </li>
+
+        <li>
+          <a href="#" data-page="Order">
+            <span class="icon"><lord-icon src="https://cdn.lordicon.com/qfijwmqj.json" trigger="hover"
+                colors="primary:#c71f16,secondary:#e83a30" style="width:25px;height:25px">
+              </lord-icon></span>
+            <span class="text">Order</span>
+          </a>
+        </li>
+
+        <li>
+          <a href="#" data-page="preorder">
+            <span class="icon"><lord-icon src="https://cdn.lordicon.com/fqbvgezn.json" trigger="hover"
+                colors="primary:#e83a30,secondary:#c71f16" style="width:28px;height:28px">
+              </lord-icon></span>
+            <span class="text">Preorder</span>
+          </a>
+        </li>
+
+        <li>
+          <a href="#" data-page="pos_wishlist">
+            <span class="icon"><lord-icon src="https://cdn.lordicon.com/okgbpdra.json" trigger="hover"
+                colors="primary:#e83a30,secondary:#e83a30" style="width:25px;height:25px">
+              </lord-icon></span>
+            <span class="text">Wishes</span>
+          </a>
+        </li>
+
+        <li>
+          <a href="#" data-page="booking">
+            <span class="icon"><lord-icon src="https://cdn.lordicon.com/lcvlsnre.json" trigger="hover"
+                colors="primary:#e83a30,secondary:#e83a30" style="width:25px;height:25px">
+              </lord-icon></span>
+            <span class="text">Booking</span>
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="header">
+        <div class="logo">
+          <span class="logo-text">
+            <sup><strong><b>CHINA TOWN</b></strong></sup><sub>Shop</sub>
+          </span>
+          <img src="assets/images/ChinaTown.png" alt="China Town Shop Logo" class="logo-img" />
+        </div>
+
+        <!-- <div class="search-bar">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search...">
+        </div> -->
+
+        <div class="header-actions">
+
+          <div class="user-info">Admin</div>
+          <button id="theme-light-btn" onclick="toggleTheme()" style="display:none;"><img src="assets/icons/sun.png"
+              style="width: 26px;"></button>
+          <button id="theme-dark-btn" onclick="toggleTheme()"><img src="assets/icons/moon.png"
+              style="width: 26px;"></button>
+
+
+          <div class="settings" id="settings-btn">
+            <lord-icon src="https://cdn.lordicon.com/vjgknpfx.json" trigger="hover"
+              colors="primary:#c71f16,secondary:#ee6d66" style="width:36px;height:36px"></lord-icon>
+            <ul class="settings-menu" id="settings-menu">
+              <li><a href="#">Profile</a></li>
+              <li><a href="#">Preferences</a></li>
+              <li><a href="#" onclick="logoutAndRedirect()">Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <section class="body-content mainbody" id="content">
+
+      </section>
+    </main>
+  </div>
+
+  <!-- ================= FIREBASE SDK ================= -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyC-crKfYn4PUeQXLIMIpCrfOVuuUXb4dfs",
+      authDomain: "chinatownshop.firebaseapp.com",
+      projectId: "chinatownshop",
+      storageBucket: "chinatownshop.firebasestorage.app",
+      messagingSenderId: "444794925166",
+      appId: "1:444794925166:web:d5ce731d58c090fa49767f"
+    };
+    firebase.initializeApp(firebaseConfig);
+    window.db = firebase.firestore();
+
+    // ============ ADMIN CHECK ============
+    firebase.auth().onAuthStateChanged(async (user) => {
+      if (!user) {
+        window.location.href = "index.html";
+        return;
+      }
+
+      try {
+        const userDoc = await firebase.firestore().collection("users").doc(user.uid).get();
+
+        if (!userDoc.exists || userDoc.data().role !== "admin") {
+          alert("You are not authorized to access this page.");
+          firebase.auth().signOut();
+          window.location.href = "index.html";
+          return;
+        }
+
+        console.log("Admin access granted.");
+      } catch (err) {
+        console.error("Error checking user role:", err);
+        alert("Something went wrong. Redirecting to homepage.");
+        window.location.href = "index.html";
+      }
+    });
+
+    // Optional: logout button redirect
+    function logoutAndRedirect() {
+      firebase.auth().signOut().then(() => {
+        window.location.href = "index.html";
+      });
+    }
+    // =====================================
+  </script>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="pos_functions.js"></script>
+  <script src="pos.js"></script>
+
+</body>
+
+</html>

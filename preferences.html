@@ -1,0 +1,41 @@
+<div class="preferences-page">
+  <h2>Dashboard Preferences</h2>
+  
+  <label for="primaryColor">Primary Color:</label>
+  <input type="color" id="primaryColor" value="#c71f16">
+
+  <label for="secondaryColor">Secondary Color:</label>
+  <input type="color" id="secondaryColor" value="#e83a30">
+
+  <label for="logo">Upload Logo:</label>
+  <input type="file" id="logo">
+
+  <button id="savePreferences">Save Preferences</button>
+</div>
+
+<script>
+const primaryColorInput = document.getElementById("primaryColor");
+const secondaryColorInput = document.getElementById("secondaryColor");
+const logoInput = document.getElementById("logo");
+
+document.getElementById("savePreferences").addEventListener("click", async () => {
+  const primary = primaryColorInput.value;
+  const secondary = secondaryColorInput.value;
+
+  // Apply colors
+  document.documentElement.style.setProperty('--primary-color', primary);
+  document.documentElement.style.setProperty('--secondary-color', secondary);
+
+  // Upload logo if selected
+  if (logoInput.files.length > 0) {
+    const file = logoInput.files[0];
+    const storageRef = firebase.storage().ref(`dashboard/logo/${file.name}`);
+    await storageRef.put(file);
+    const url = await storageRef.getDownloadURL();
+    document.querySelector(".logo-img").src = url;
+    alert("Preferences saved!");
+  } else {
+    alert("Preferences saved!");
+  }
+});
+</script>

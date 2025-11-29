@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Product Management</title>
+    <style>
+        #loadProductsBtn {
+            position: absolute;
+            right: 74px;
+            top: 27%;
+            transform: translateY(-50%);
+            background-color: #f72525;
+            color: #fff;
+            font-weight: 400;
+            border: none;
+            padding: 15px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        #loadProductsBtn:hover {
+            background-color: var(--bg-color);
+            color: red;
+            border: 1px solid red;
+        }
+
+        /* MAIN CONTENT */
+        main {
+            padding: 24px;
+        }
+
+        .table-container {
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow-x: auto;
+            /* allows horizontal scroll on small screens */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+            /* ensures table doesn't shrink too much */
+        }
+
+        thead {
+            background-color: #e5e7eb;
+        }
+
+        th,
+        td {
+            padding: 12px 16px;
+            text-align: left;
+            white-space: nowrap;
+            /* prevent text from wrapping */
+        }
+
+        th {
+            font-weight: 600;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        tbody tr:hover {
+            background-color: #f3f4f6;
+        }
+
+        .action-btn {
+            background-color: #10b981;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background-color: #059669;
+        }
+
+        img.product-image {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        /* RESPONSIVE STYLES */
+        @media screen and (max-width: 768px) {
+            header h1 {
+                font-size: 20px;
+            }
+
+            #loadProductsBtn {
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+
+            table {
+                min-width: 500px;
+            }
+
+            th,
+            td {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+
+            img.product-image {
+                width: 40px;
+                height: 40px;
+            }
+
+            .action-btn {
+                padding: 4px 8px;
+                font-size: 12px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            header {
+                flex-direction: column;
+                padding: 12px;
+            }
+
+            #loadProductsBtn {
+                position: static;
+                transform: none;
+                margin-top: 8px;
+            }
+
+            table {
+                min-width: 400px;
+            }
+
+            th,
+            td {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+
+            img.product-image {
+                width: 35px;
+                height: 35px;
+            }
+
+            .action-btn {
+                padding: 3px 6px;
+                font-size: 11px;
+            }
+        }
+
+
+
+        /* Table Styling */
+        #productTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        #productTable th,
+        #productTable td {
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        #productTable th {
+            background-color: #f4f4f4;
+        }
+
+        .product-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+
+        .update-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .update-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <h1>Product Management</h1>
+        <button id="loadProductsBtn">Load Products</button>
+    </header>
+
+    <!-- PRODUCT TABLE -->
+    <main>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Code</th>
+                        <th>Current Price</th>
+                        <th>Purchase Price</th>
+                        <th>In Stock</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="productTableBody">
+                    <!-- Product rows will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+</body>
+
+</html>

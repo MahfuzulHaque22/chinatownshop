@@ -1,0 +1,308 @@
+:root {
+  --font-family: 'Jost', sans-serif;
+  --bg-light: #f9f9f9;
+  --text-light: #333;
+  --primary-light: rgba(207, 207, 207, 0.3);
+
+  --bg-dark: #1e1e1e;
+  --text-dark: #fff;
+  --primary-dark: rgba(255, 255, 255, 0.07);
+}
+
+[data-theme="light"] {
+  --bg-color: var(--bg-light);
+  --text-color: var(--text-light);
+  --primary-color: var(--primary-light);
+  --card-bg: #fff;
+  --header-bg: #f2f2f2;
+}
+
+[data-theme="dark"] {
+  --bg-color: var(--bg-dark);
+  --text-color: var(--text-dark);
+  --primary-color: var(--primary-dark);
+  --card-bg: #2a2a2a;
+  --header-bg: #333;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  background: var(--bg-color);
+  color: var(--text-color);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Container */
+.container {
+  max-width: 1100px;
+  margin: 20px auto;
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  overflow-x: auto;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeIn 0.6s ease;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+  font-size: 0.95rem;
+}
+
+th,
+td {
+  padding: 12px 8px;
+  text-align: center;
+  border: none;
+}
+
+th {
+  background: var(--bg-color);
+
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+tr {
+  background: var(--card-bg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+tr:hover {
+  transform: scale(1.01);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+/* Select dropdown */
+select {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: var(--primary-color);
+  color: var(--text-color);
+  transition: background 0.3s, color 0.3s;
+  outline: none;
+  font-weight: 500;
+}
+
+/* Add color to dropdown options */
+option[value="payment_in_review"] {
+  background: #f0ad4e;
+  color: #fff;
+}
+
+option[value="payment_confirmed"] {
+  background: #5cb85c;
+  color: #fff;
+}
+
+option[value="product_in_query"] {
+  background: #6c757d;
+  color: #fff;
+}
+
+option[value="product_in_delivery"] {
+  background: #0275d8;
+  color: #fff;
+}
+
+option[value="order_complete"] {
+  background: #343a40;
+  color: #fff;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 14px;
+  color: #fff;
+  font-weight: 500;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+  animation: fadeIn 0.5s ease;
+}
+
+.badge-payment_in_review {
+  background: #f0ad4e;
+}
+
+.badge-payment_confirmed {
+  background: #5cb85c;
+}
+
+.badge-product_in_query {
+  background: #6c757d;
+}
+
+.badge-product_in_delivery {
+  background: #0275d8;
+}
+
+.badge-order_complete {
+  background: #343a40;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* ================= Preorders Table ================= */
+#preordersTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+  font-size: 0.95rem;
+}
+
+#preordersTable th,
+#preordersTable td {
+  padding: 12px 15px;
+  text-align: left;
+}
+
+#preordersTable th {
+  background: var(--header-bg);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+#preordersTable tr {
+  background: var(--card-bg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+#preordersTable tr:hover {
+  transform: scale(1.01);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+/* Select dropdown */
+#preordersTable select {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: var(--primary-color);
+  color: var(--text-color);
+  transition: background 0.3s, color 0.3s;
+  outline: none;
+  font-weight: 500;
+}
+
+/* Badges */
+#preordersTable .badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 14px;
+  color: #fff;
+  font-weight: 500;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+  animation: fadeIn 0.5s ease;
+}
+
+/* Preorder status colors */
+#preordersTable .badge-requested {
+  background: #4ef0b2;
+}
+
+#preordersTable .badge-accepted {
+  background: #f0ad4e;
+}
+
+#preordersTable .badge-payment_complete {
+  background: #5cb85c;
+}
+
+#preordersTable .badge-in_query {
+  background: #6c757d;
+}
+
+#preordersTable .badge-available_in_store {
+  background: #0275d8;
+}
+
+#preordersTable .badge-complete {
+  background: #343a40;
+}
+
+/* Optional: hover animation for select */
+#preordersTable select:hover {
+  opacity: 0.9;
+}
+
+/* Optional: fade-in animation for table rows */
+#preordersTable tr {
+  animation: fadeIn 0.6s ease;
+}
+
+
+
+
+.wishlist-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.wishlist-card {
+  background: var(--card-bg, #fff);
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.wishlist-card:hover {
+  transform: scale(1.01);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  /* margin-bottom: 10px;
+  border-bottom: 1px solid #ddd; */
+  padding-bottom: 8px;
+}
+
+.product-section {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+}
+
+.product-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  max-width: 200px;
+}
+
+.product-details p {
+  margin: 4px 0;
+  font-size: 14px;
+}

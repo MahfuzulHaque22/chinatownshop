@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Responsive Floating Nav</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Jost&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.lordicon.com/lordicon.js"></script>
+    <link rel="stylesheet" href="common.css">
+
+    <style>
+        /* ---------- GENERAL RESET ---------- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Jost', system-ui, Arial, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        /* ---------- CONTAINER & CARD ---------- */
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            padding: 40px 30px;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            margin-top: 60px;
+        }
+
+        .card h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #f12323;
+        }
+
+        /* ---------- MATERIAL STYLE INPUTS ---------- */
+        .material-input {
+            position: relative;
+            margin-top: 25px;
+        }
+
+        .material-input input,
+        .material-input textarea,
+        .material-input select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+            background: #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .material-input input:focus,
+        .material-input textarea:focus,
+        .material-input select:focus {
+            border-color: #f03030;
+            box-shadow: 0 4px 12px rgba(11, 61, 145, 0.2);
+        }
+
+        .material-input label {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            pointer-events: none;
+            background: #fff;
+            padding: 0 5px;
+            transition: 0.3s ease all;
+        }
+
+        /* Floating label when focused or filled */
+        .material-input input:focus+label,
+        .material-input textarea:focus+label,
+        .material-input select:focus+label,
+        .material-input input:not(:placeholder-shown)+label,
+        .material-input textarea:not(:placeholder-shown)+label,
+        .material-input select:not([value=""])+label {
+            top: -10px;
+            font-size: 12px;
+            color: #eb2929;
+        }
+
+        /* ---------- TEXTAREA ---------- */
+        .material-input textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* ---------- BUTTON ---------- */
+        .btn {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            background: #eb2020;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px rgba(11, 61, 145, 0.2);
+        }
+
+        .btn:hover {
+            background: var(--bg-color);
+            transform: translateY(-2px);
+            border: 1px solid red;
+            box-shadow: 0 8px 20px rgba(11, 61, 145, 0.25);
+        }
+
+        /* ---------- IMAGE PREVIEW ---------- */
+        .img-preview-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .img-preview-slot {
+            width: 90px;
+            height: 90px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #ccc;
+            background: #f5f7fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .img-preview-slot:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .img-preview-slot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .img-remove {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: #ff3b3b;
+            color: #fff;
+            width: 20px;
+            height: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ---------- PROGRESS BAR ---------- */
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(11, 61, 145, 0.15);
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            width: 0%;
+            height: 100%;
+            background: #f72323;
+            border-radius: 3px;
+            transition: width 0.4s ease;
+        }
+
+        /* ---------- STATUS MESSAGE ---------- */
+        #statusMsg {
+            margin-top: 15px;
+            font-weight: 500;
+            font-size: 14px;
+            color: #f62828;
+        }
+
+        /* ---------- RESPONSIVE ---------- */
+        @media(max-width:720px) {
+            .card {
+                padding: 25px 20px;
+            }
+
+            .img-preview-slot {
+                width: 70px;
+                height: 70px;
+            }
+        }
+
+
+        /* ---------- FORM GRID ---------- */
+        #wishForm {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-top: 15px;
+        }
+
+        #wishForm .material-input,
+        #wishForm label,
+        #wishForm input,
+        #wishForm textarea,
+        #wishForm select {
+            width: 100%;
+            background-color: transparent;
+        }
+
+        /* ---------- MATERIAL STYLE INPUTS ---------- */
+        .material-input {
+            position: relative;
+        }
+
+        .material-input input,
+        .material-input textarea,
+        .material-input select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+            background: #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .material-input input:focus,
+        .material-input textarea:focus,
+        .material-input select:focus {
+            border-color: #f32b2b;
+            box-shadow: 0 4px 12px rgba(11, 61, 145, 0.2);
+        }
+
+        .material-input label {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            pointer-events: none;
+            background: #fff;
+            padding: 0 5px;
+            transition: 0.3s ease all;
+        }
+
+        /* Floating label */
+        .material-input input:focus+label,
+        .material-input textarea:focus+label,
+        .material-input select:focus+label,
+        .material-input input:not(:placeholder-shown)+label,
+        .material-input textarea:not(:placeholder-shown)+label,
+        .material-input select:not([value=""])+label {
+            top: -10px;
+            font-size: 12px;
+            color: #f21f1f;
+        }
+
+        /* ---------- SPECIAL LAYOUT ---------- */
+        /* Product Name spans 2 cols */
+        #wishProductName {
+            grid-column: span 2;
+        }
+
+        /* Description spans 2 cols */
+        #wishDescription {
+            grid-column: span 2;
+        }
+
+        /* File upload spans 2 cols */
+        #wishImages {
+            grid-column: span 2;
+            padding: 10px;
+            border: 1px dashed #bbb;
+            border-radius: 10px;
+            background: #fafafa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #wishImages:hover {
+            border-color: #ef2121;
+            background: #f0f6ff;
+        }
+
+        /* Compact input fields */
+        .small-input input {
+            padding: 15px 12px;
+            font-size: 14px;
+            border-radius: 30px;
+        }
+
+        .big-input input {
+            border-radius: 30px;
+        }
+
+
+        /* Actions */
+        #wishForm .actions {
+            grid-column: span 2;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        /* ---------- BUTTON ---------- */
+        .btn {
+            display: inline-block;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 20px;
+            background: #e61c1c;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px rgba(11, 61, 145, 0.2);
+        }
+
+        .btn:hover {
+            background: rgb(255, 67, 67);
+            border: 1px solid red;
+            transform: translateY(-2px);
+        }
+
+        /* ---------- RESPONSIVE ---------- */
+       /* ---------- MOBILE VIEW FIX ---------- */
+@media (max-width: 720px) {
+  /* Form layout: single column, comfortable padding */
+  #wishForm {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0 5px;
+  }
+
+  /* Material input tweaks */
+  .material-input {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .material-input input,
+  .material-input textarea,
+  .material-input select {
+    font-size: 15px;
+    padding: 12px 14px;
+    border-radius: 10px;
+  }
+
+  .material-input label {
+    left: 14px;
+    font-size: 14px;
+  }
+
+  /* Larger tap targets */
+  .btn {
+    width: 100%;
+    text-align: center;
+    padding: 14px 0;
+    border-radius: 10px;
+    font-size: 17px;
+  }
+
+  /* Adjust upload zone */
+  .upload-zone {
+    padding: 20px;
+    border-width: 1.5px;
+    border-radius: 12px;
+    font-size: 14px;
+  }
+
+  .upload-zone .upload-content i {
+    font-size: 32px;
+  }
+
+  .upload-zone .upload-content p {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  /* Image previews fit grid */
+  .img-preview-container {
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .img-preview-slot {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+  }
+
+  /* Reduce spacing in card */
+  .card {
+    margin-top: 30px;
+    padding: 20px 15px;
+  }
+
+  /* User info block readable */
+  #userInfoBlock {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* Adjust status message spacing */
+  #statusMsg {
+    font-size: 13px;
+    margin-top: 10px;
+  }
+}
+
+
+
+        /* Upload Zone */
+        .upload-zone {
+            grid-column: span 2;
+            padding: 30px;
+            border: 2px dashed #bbb;
+            border-radius: 16px;
+            /* background: linear-gradient(145deg, #fafafa, #f5f7fa); */
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-zone:hover {
+            border-color: #ef2121;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(240, 30, 30, 0.15);
+        }
+
+        .upload-zone .upload-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            color: var(--bg-color);
+        }
+
+        .upload-zone i {
+            font-size: 40px;
+            color: #ef2121;
+            animation: float 2s ease-in-out infinite;
+        }
+
+        .browse-btn {
+            color: #ef2121;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-6px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        /* Updated Preview Slots */
+        .img-preview-slot {
+            width: 100px;
+            height: 100px;
+            border-radius: 16px;
+            position: relative;
+            border: 2px solid #eee;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            animation: fadeIn 0.4s ease;
+            transition: all 0.3s ease;
+        }
+
+        .img-preview-slot:hover {
+            transform: scale(1.08) rotate(1deg);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="header-wrapper">
+        <header class="header" id="mainHeader">
+            <div class="logo">
+                <span class="logo-text">
+                    <sup><strong><b>CHINA TOWN</b></strong></sup><sub>Shop</sub>
+                </span>
+                <img src="assets/images/logo.png" alt="China Town Shop Logo" class="logo-img" />
+            </div>
+
+            <nav class="navbar" id="navbar">
+                <a href="index.html">Home</a>
+                <a href="brand.html">Brands</a>
+                <a href="products.html">Products</a>
+                <a href="wholesale.html">Wholesale</a>
+                <a href="make-a-wish.html">Make a Wish</a>
+            </nav>
+
+            <div class="controls">
+                <button class="icon-btn desktop-only" id="categoryBtnInside">
+                    <img src="assets/icons/categories.png" class="icon-img" alt="Category Icon">
+                </button>
+
+                <button class="icon-btn" id="themeToggleIcon">
+                    <img src="assets/icons/moon.png" alt="Toggle Theme" class="icon-img" id="themeIconImg">
+                </button>
+
+                <button class="icon-btn desktop-only" id="userBtnInside">
+                    <img src="assets/icons/user.png" class="icon-img" alt="User Icon">
+                </button>
+
+                <button class="icon-btn mobile-only" id="menuToggle">
+                    <img src="assets/icons/menu.png" class="icon-img" alt="Menu Icon">
+                </button>
+            </div>
+        </header>
+    </div>
+
+    <div id="loginPopup" class="login-popup">
+        <div class="popup-content">
+            <h2 style="color: rgb(247, 38, 38);">Explore More By Log In</h2>
+
+            <!-- Google Button -->
+            <button onclick="loginGoogle()">
+                <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="btn-icon">
+                Sign in with Google
+            </button>
+
+            <!-- Facebook Button -->
+            <button onclick="loginFacebook()">
+                <img src="assets/icons/facebook.png" alt="Facebook" class="btn-icon">
+                Sign in with Facebook
+            </button>
+
+            <p>verify with WhatsApp/Telegram before ordering</p>
+            <button onclick="closeLoginPopup()">Close</button>
+        </div>
+    </div>
+
+    <div id="userDrawer" class="user-drawer">
+        <button class="drawer-close-btn" onclick="closeUserDrawer()">×</button>
+        <div class="drawer-content">
+            <div class="profile-header">
+                <img id="drawerProfileImg" class="drawer-profile-img" src="" alt="Profile Picture" />
+                <div class="profile-info">
+                    <h3 id="drawerName">User Name</h3>
+                    <p id="drawerEmail">Email</p>
+                </div>
+            </div>
+
+            <!-- Account Button -->
+            <button class="save-btn" onclick="openAccountPopup()">Account</button>
+
+            <!-- New Drawer Options -->
+            <ul class="drawer-options">
+                <li><a href="userorder.html">Orders</a></li>
+                <li><a href="makewish.html">Wishlist</a></li>
+                <li><a href="support.html">Support</a></li>
+            </ul>
+
+            <!-- Logout Button -->
+            <button class="logout-btn" onclick="logoutUser()">Logout</button>
+        </div>
+    </div>
+
+    <!-- Account Popup -->
+    <div id="accountPopup" class="login-popup">
+        <div class="popup-content">
+            <!-- Close icon at top-right -->
+            <button class="popup-close-icon" onclick="closeAccountPopup()">×</button>
+            <h2>Account Details</h2>
+            <form id="userInfoForm" onsubmit="event.preventDefault(); saveUserInfo();">
+                <label for="userBirthday">Birthday:</label>
+                <input type="date" id="userBirthday" />
+
+                <label for="userGender">Gender:</label>
+                <select id="userGender">
+                    <option value="">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+
+                <label for="userPhone">Phone Number:</label>
+                <input id="userPhone" type="tel" placeholder="+880..." />
+
+                <label for="userAddress">Address:</label>
+                <textarea id="userAddress" placeholder="Enter your address"></textarea>
+
+                <div class="button-group">
+                    <button type="submit" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+    <div id="drawerOverlay" class="drawer-overlay" onclick="closeUserDrawer()"></div>
+
+    <div id="categoryDrawer">
+        <header>
+            Category
+            <button id="closeCategoryDrawer" aria-label="Close category drawer">&times;</button>
+        </header>
+
+        <div class="category-content">
+            <div id="subcategoryHeader">
+                <button id="backToMain">&larr;</button>
+                <span id="selectedCategoryName"></span>
+            </div>
+
+            <ul id="mainCategoryList"></ul>
+            <ul id="subcategoryList"></ul>
+        </div>
+    </div>
+
+    <div id="overlay" onclick="closeCategoryDrawerFn()"></div>
+    <button class="floating-close" onclick="closeCategoryDrawerFn()">×</button>
+
+
+
+    <!-- Floating Close Button -->
+    <button id="closeCategoryDrawer" class="floating-close" onclick="closeDrawer()">×</button>
+
+
+
+
+
+    <div id="drawerOverlay" class="drawer-overlay" onclick="closeUserDrawer()"></div>
+
+    <div class="mobile-drawer" id="mobileDrawer">
+        <button id="closeDrawer" class="drawer-close">&times;</button>
+        <a href="index.html">Home</a>
+        <a href="brand.html">Brands</a>
+        <a href="products.html">Products</a>
+        <a href="wholesale.html">Wholesale</a>
+        <a href="make-a-wish.html">Make a Wish</a>
+    </div>
+
+    <main class="content">
+        <section class="custom-section">
+            <div class="main-layout">
+                <div class="big-box">
+                    <div>
+                        <div class="container">
+                            <div class="card">
+                                <h2>Make a Wish</h2>
+                                <p class="muted">Tell us what product you'd like — we'll try to source it for you. We'll
+                                    save your contact details for faster ordering next time.</p>
+
+                                <!-- user info block -->
+                                <div id="userInfoBlock" style="margin-bottom: 18px;">
+                                    <h3>User Info</h3>
+                                    <p><b>Name:</b> <span id="wishUserName"></span></p>
+                                    <p><b>Email:</b> <span id="wishUserEmail"></span></p>
+                                    <p><b>Phone:</b> <span id="wishUserPhone"></span></p>
+                                    <p id="phoneWarning" style="color:red;display:none;">
+                                        Please enter your phone number in <b>Account</b> before making a wish.
+                                    </p>
+                                </div>
+
+                                <!-- wish form -->
+                                <form id="wishForm">
+                                    <!-- Product Name full width -->
+                                    <div class="material-input big-input">
+                                        <input type="text" id="wishProductName" placeholder=" " required />
+                                        <label for="wishProductName">Product Name</label>
+                                    </div>
+
+                                    <!-- Size small -->
+                                    <div class="small-input material-input">
+                                        <input type="text" id="wishSize" placeholder=" " />
+                                        <label for="wishSize">Size</label>
+                                    </div>
+
+                                    <!-- Color small -->
+                                    <div class="small-input material-input">
+                                        <input type="text" id="wishColor" placeholder=" " />
+                                        <label for="wishColor">Color</label>
+                                    </div>
+
+                                    <!-- Quantity small -->
+                                    <div class="small-input material-input">
+                                        <input type="number" id="wishQuantity" min="1" required placeholder=" " />
+                                        <label for="wishQuantity">Quantity</label>
+                                    </div>
+
+                                    <!-- Description full width -->
+                                    <div class="material-input">
+                                        <textarea id="wishDescription" placeholder=" "></textarea>
+                                        <label for="wishDescription">Description</label>
+                                    </div>
+
+                                    <!-- File Upload -->
+                                    <div class="upload-zone" id="uploadZone">
+                                        <input type="file" id="wishImages" accept="image/*" multiple hidden />
+                                        <div class="upload-content">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <p>Drag & Drop images here or <span class="browse-btn">browse</span></p>
+                                            <small>You can upload up to 3 images</small>
+                                        </div>
+                                    </div>
+
+
+                                    <!-- Submit button -->
+                                    <div class="actions">
+                                        <button type="submit" class="btn">Submit Wish</button>
+                                    </div>
+                                </form>
+
+
+
+
+                                <p id="statusMsg" class="muted-note" style="margin-top:12px"></p>
+                            </div>
+                        </div>
+
+
+                        <!-- Button for Slide 1 -->
+                        <a href="products.html" class="shop-now-btn shop-now-left active" style="display: none;">Shop
+                            Now</a>
+
+                        <!-- Button for Slide 2 -->
+                        <a href="products.html" class="shop-now-btn shop-now-right" style="display: none;">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <button class="icon-btn floating-btn left" id="floatingCategory">
+        <img src="assets/icons/categories.png" class="icon-img" alt="Category Icon">
+    </button>
+
+    <button class="icon-btn floating-btn right" data-btn="userBtnInside" id="floatingUser">
+        <img src="assets/icons/user.png" class="icon-img" alt="User Icon">
+    </button>
+
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h4>China Town Shop</h4>
+                <p>Your one-stop shop for quality and affordability.</p>
+            </div>
+
+            <div class="footer-row">
+                <div class="footer-col" style="display: flex; justify-content:center; align-items: center;">
+                    <img src="assets/images/logo.png" style="width: 140px; height:140px;">
+                </div>
+
+
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="brand.html">Brand</a></li>
+                        <li><a href="products.html">Product</a></li>
+                        <li><a href="wholesale.html">Wholesale</a></li>
+                        <li><a href="wish.html">Make a Wish</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Customer Service</h4>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">Shipping Info</a></li>
+                        <li><a href="#">Track Order</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Follow Us</h4>
+                    <div class="social-icons">
+                        <a href="https://www.facebook.com/profile.php?id=61573035666869">
+                            <lord-icon src="https://cdn.lordicon.com/lplofcfe.json" trigger="hover"
+                                colors="primary:#e83a30,secondary:#1663c7">
+                            </lord-icon>
+                        </a>
+                        <a href="https://wa.me/+8801333180868">
+                            <lord-icon src="https://cdn.lordicon.com/dnphlhar.json" trigger="hover"
+                                colors="primary:#16c72e,secondary:#e83a30">
+                            </lord-icon>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="footer-newsletter">
+                <h4>Subscribe</h4>
+                <form>
+                    <input type="email" placeholder="Enter your email" />
+                    <button type="submit">Join</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 China Town Shop. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="route.js" defer></script>
+
+
+    <script type="module" src="auth.js"></script>
+    <script type="module">
+        import { auth } from './firebase-init.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-storage.js";
+
+        const db = getFirestore();
+        const storage = getStorage();
+
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const wishForm = document.getElementById("wishForm");
+            const wishUserName = document.getElementById("wishUserName");
+            const wishUserEmail = document.getElementById("wishUserEmail");
+            const wishUserPhone = document.getElementById("wishUserPhone");
+            const phoneWarning = document.getElementById("phoneWarning");
+            const statusMsg = document.getElementById("statusMsg");
+            const wishImagesInput = document.getElementById("wishImages");
+
+            let currentUser = null;
+            let selectedFiles = [];
+
+            // Image preview container
+            const imgPreviewContainer = document.createElement("div");
+            imgPreviewContainer.className = "img-preview-container";
+            wishImagesInput.parentNode.insertBefore(imgPreviewContainer, wishImagesInput.nextSibling);
+
+            // ===================== LOAD USER INFO =====================
+            onAuthStateChanged(auth, async (user) => {
+                if (!user) {
+                    wishForm.style.display = "none";
+                    document.getElementById("userInfoBlock").innerHTML = `<p style="color:red;">Please login to make a wish.</p>`;
+                    return;
+                }
+
+                currentUser = {
+                    uid: user.uid,
+                    name: user.displayName || "Unknown",
+                    email: user.email
+                };
+
+                const userRef = doc(db, "users", user.uid);
+                const userSnap = await getDoc(userRef);
+
+                let phone = null;
+
+                if (userSnap.exists()) {
+                    const data = userSnap.data();
+                    wishUserName.textContent = data.name || currentUser.name;
+                    wishUserEmail.textContent = data.email;
+                    wishUserPhone.textContent = data.phone || "Not Provided";
+                    phone = data.phone || null;
+                } else {
+                    wishUserName.textContent = currentUser.name;
+                    wishUserEmail.textContent = currentUser.email;
+                    wishUserPhone.textContent = "Not Provided";
+                }
+
+                phoneWarning.style.display = phone ? "none" : "block";
+            });
+
+         // ===================== FORM SUBMISSION =====================
+            wishForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                statusMsg.textContent = "";
+
+                if (!currentUser) return alert("Please login first.");
+                if (wishUserPhone.textContent === "Not Provided") return alert("Please add your phone in Account settings.");
+
+                const productName = document.getElementById("wishProductName").value.trim();
+                const size = document.getElementById("wishSize").value.trim();
+                const color = document.getElementById("wishColor").value.trim();
+                const quantity = document.getElementById("wishQuantity").value;
+                const description = document.getElementById("wishDescription").value.trim();
+
+                let imageUrls = [];
+
+                try {
+                    statusMsg.textContent = "Uploading images...";
+                    for (let i = 0; i < selectedFiles.length; i++) {
+                        const imgFile = selectedFiles[i];
+                        const imgRef = ref(storage, `wishImages/${currentUser.uid}/${Date.now()}_${imgFile.name}`);
+                        const uploadTask = uploadBytesResumable(imgRef, imgFile);
+
+                        // Track progress
+                        uploadTask.on('state_changed', (snapshot) => {
+                            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                            const progressFill = imgPreviewContainer.children[i].querySelector(".progress-bar-fill");
+                            progressFill.style.width = `${progress}%`;
+                        });
+
+                        await uploadTask;
+                        const url = await getDownloadURL(imgRef);
+                        imageUrls.push(url);
+                    }
+
+                    statusMsg.textContent = "Saving your wish...";
+                    await addDoc(collection(db, "wishes"), {
+                        uid: currentUser.uid,
+                        name: wishUserName.textContent,
+                        email: wishUserEmail.textContent,
+                        phone: wishUserPhone.textContent,
+                        productName,
+                        size,
+                        color,
+                        quantity,
+                        description,
+                        images: imageUrls,
+                        createdAt: serverTimestamp()
+                    });
+
+                    statusMsg.textContent = "✅ Your wish has been submitted successfully!";
+                    wishForm.reset();
+                    imgPreviewContainer.innerHTML = "";
+
+                } catch (err) {
+                    console.error("Error submitting wish:", err);
+                    statusMsg.textContent = "❌ Failed to submit wish. Check console.";
+                }
+            });
+
+        });
+
+
+
+        const uploadZone = document.getElementById("uploadZone");
+        const browseBtn = uploadZone.querySelector(".browse-btn");
+
+        // Open file selector when clicking browse
+        browseBtn.addEventListener("click", () => wishImagesInput.click());
+
+        // Drag & Drop
+        uploadZone.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            uploadZone.style.borderColor = "#f03030";
+            uploadZone.style.background = "#fff0f0";
+        });
+        uploadZone.addEventListener("dragleave", () => {
+            uploadZone.style.borderColor = "#bbb";
+            uploadZone.style.background = "linear-gradient(145deg, #fafafa, #f5f7fa)";
+        });
+        uploadZone.addEventListener("drop", (e) => {
+            e.preventDefault();
+            uploadZone.style.borderColor = "#bbb";
+            uploadZone.style.background = "linear-gradient(145deg, #fafafa, #f5f7fa)";
+            const files = Array.from(e.dataTransfer.files).slice(0, 3);
+            wishImagesInput.files = e.dataTransfer.files; // attach to input
+            handleImagePreview(files);
+        });
+
+        // When files are chosen manually
+        wishImagesInput.addEventListener("change", () => {
+            const files = Array.from(wishImagesInput.files).slice(0, 3);
+            handleImagePreview(files);
+        });
+
+        // Preview function with animation
+        function handleImagePreview(files) {
+            selectedFiles = files;
+            imgPreviewContainer.innerHTML = "";
+            selectedFiles.forEach((file, index) => {
+                const slot = document.createElement("div");
+                slot.className = "img-preview-slot";
+
+                const img = document.createElement("img");
+                img.src = URL.createObjectURL(file);
+                slot.appendChild(img);
+
+                const removeBtn = document.createElement("div");
+                removeBtn.className = "img-remove";
+                removeBtn.textContent = "×";
+                removeBtn.onclick = () => {
+                    selectedFiles.splice(index, 1);
+                    slot.remove();
+                };
+                slot.appendChild(removeBtn);
+
+                const progressBar = document.createElement("div");
+                progressBar.className = "progress-bar";
+                const progressFill = document.createElement("div");
+                progressFill.className = "progress-bar-fill";
+                progressBar.appendChild(progressFill);
+                slot.appendChild(progressBar);
+
+                imgPreviewContainer.appendChild(slot);
+            });
+        }
+
+
+    </script>
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>China Town Shop</title>
+  <link rel="stylesheet" href="products.css" />
+  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Jost&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
+  <script src="https://cdn.lordicon.com/lordicon.js"></script>
+
+
+
+  <!-- Firebase and Auth Script -->
+  <script type="module" src="firebase-init.js"></script>
+  <script type="module" src="auth.js"></script>
+
+</head>
+
+<body>
+
+  <header class="main-header">
+
+    <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+      <span class="logo-text">
+        <sup><strong><b>CHINA TOWN</b></strong></sup><sub>Shop</sub>
+      </span>
+      <img src="assets/images/logo.png" alt="China Town Shop Logo" class="logo-img" />
+    </div>
+
+
+
+    <div class="search-row">
+      <input type="text" id="searchInputDesktop" placeholder="Search products..." />
+    </div>
+
+
+    <div class="icons">
+      <span class="icon" id="cartIcon" onclick="location.href='cart.html'">
+        <lord-icon src="https://cdn.lordicon.com/ggirntso.json" trigger="hover"
+          colors="primary:#e83a30,secondary:#e83a30">
+        </lord-icon>
+        <span class="badge hide" id="cartCount">0</span>
+      </span>
+      <span class="icon" id="favIcon" onclick="location.href='wishlist.html'">
+        <lord-icon src="https://cdn.lordicon.com/nvsfzbop.json" trigger="hover"
+          colors="primary:#e83a30,secondary:#e83a30">
+        </lord-icon>
+
+        <span class="badge hide" id="favCount">0</span>
+      </span>
+
+      <span class="icon" id="themeToggleIcon">
+        <img id="themeIconImg" src="assets/icons/moon.png" alt="Theme Icon" width="24" height="24" />
+      </span>
+
+      <span class="icon" id="userArea">
+        <lord-icon src="https://cdn.lordicon.com/kdduutaw.json" trigger="hover"
+          colors="primary:#c71f16,secondary:#e83a30" onclick="openUserDrawer()">
+        </lord-icon>
+      </span>
+
+
+
+
+    </div>
+
+
+
+  </header>
+
+
+
+  <div class="midd">
+    <div class="mobile-search mobile-only" style="position: fixed; z-index: 100;top: 60px;">
+      <input type="text" id="searchInputMobile" placeholder="Search products..." />
+    </div>
+  </div>
+  <!-- Mobile search bar (only visible on small screens) -->
+
+
+
+
+
+  <div class="main-content">
+    <!-- LEFT COLUMN: Categories -->
+    <aside class="left-sidebar">
+      <h3>Categories</h3>
+      <div id="categoryGrid" class="category-grid"></div>
+    </aside>
+
+    <!-- RIGHT COLUMN: Products -->
+    <section class="right-content">
+      <main>
+        <div id="loadingSpinner" class="spinner"></div>
+        <div id="productGrid" class="product-grid"></div>
+        <button id="loadMoreBtn" class="load-more-btn">Load More</button>
+      </main>
+
+      <!-- Floating Category Button (Mobile only) -->
+      <button id="openCategoryDrawer" class="floating-btn">
+        <i class="fas fa-bars"></i>
+      </button>
+
+
+      <div id="overlay" class="hidden"></div>
+
+
+      <!-- Mobile Category Drawer -->
+      <div id="categoryDrawer" class="category-drawer">
+        <div class="drawer-header">
+          <span id="drawerBack" class="hidden"><i class="fas fa-arrow-left"></i></span>
+          <span id="drawerTitle">Categories</span>
+          <span id="drawerClose"><i class="fas fa-times"></i></span>
+        </div>
+        <div id="drawerContent" class="drawer-content"></div>
+      </div>
+
+
+      <!-- Subcategory Drawer (Desktop only, initially hidden) -->
+      <div id="subCategoryDrawer" class="subcategory-drawer hidden">
+        <div class="drawer-header">
+          <span id="subDrawerTitle">Subcategories</span>
+          <span id="subDrawerClose"><i class="fas fa-times"></i></span>
+        </div>
+        <div id="subDrawerContent" class="drawer-content"></div>
+      </div>
+
+
+
+      <!--  LOGIN POPUP -->
+      <div id="loginPopup" class="login-popup hidden">
+        <div class="popup-content">
+          <h2 style="color: rgb(247, 38, 38);">Explore More By Log In</h2>
+
+          <!-- Google Button -->
+          <button onclick="loginGoogle()">
+            <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="btn-icon">
+            Sign in with Google
+          </button>
+
+          <!-- Facebook Button -->
+          <button onclick="loginFacebook()">
+            <img src="assets/icons/facebook.png" alt="Facebook" class="btn-icon">
+            Sign in with Facebook
+          </button>
+
+          <p>verify with WhatsApp/Telegram before ordering</p>
+          <button onclick="closeLoginPopup()">Close</button>
+        </div>
+
+      </div>
+
+      <!-- USER DRAWER -->
+
+      <div id="userDrawer" class="user-drawer">
+        <button class="drawer-close-btn" onclick="closeUserDrawer()">×</button>
+        <div class="drawer-content">
+          <div class="profile-header">
+            <img id="drawerProfileImg" class="drawer-profile-img" src="" alt="Profile Picture" />
+            <div class="profile-info">
+              <h3 id="drawerName">User Name</h3>
+              <p id="drawerEmail">Email</p>
+            </div>
+          </div>
+
+          <!-- Account Button -->
+          <button class="save-btn" onclick="openAccountPopup()">Account</button>
+
+          <!-- New Drawer Options -->
+          <ul class="drawer-options">
+            <li><a href="userorder.html">Orders</a></li>
+            <li><a href="makewish.html">Wishlist</a></li>
+            <li><a href="support.html">Support</a></li>
+          </ul>
+
+          <!-- Logout Button -->
+          <button class="logout-btn" onclick="logoutUser()">Logout</button>
+        </div>
+      </div>
+
+
+      <!-- Account Popup -->
+      <div id="accountPopup" class="login-popup">
+        <div class="popup-content">
+          <!-- Close icon at top-right -->
+          <button class="popup-close-icon" onclick="closeAccountPopup()">×</button>
+          <h2>Account Details</h2>
+          <form id="userInfoForm" onsubmit="event.preventDefault(); saveUserInfo();">
+            <label for="userBirthday">Birthday:</label>
+            <input type="date" id="userBirthday" />
+
+            <label for="userGender">Gender:</label>
+            <select id="userGender">
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+
+            <label for="userPhone">Phone Number:</label>
+            <input id="userPhone" type="tel" placeholder="+880..." />
+
+            <label for="userAddress">Address:</label>
+            <textarea id="userAddress" placeholder="Enter your address"></textarea>
+
+            <div class="button-group">
+              <button type="submit" class="save-btn">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+
+      <footer class="site-footer">
+        <p>&copy; 2025 China Town Shop. All rights reserved.</p>
+      </footer>
+    </section>
+  </div>
+
+  <!-- ================= FIREBASE SDK ================= -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+  <script type="module" src="firebase-init.js"></script>
+  <script type="module" src="authproducts.js"></script>
+  <script type="module" src="products.js"></script>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>China Town Shop</title>
+  <link rel="stylesheet" href="products.css" />
+  <!-- <link rel="stylesheet" href="common.css"> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Jost&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
+  <script src="https://cdn.lordicon.com/lordicon.js"></script>
+  <link rel="stylesheet" href="common.css">
+
+
+
+  <!-- Firebase and Auth Script -->
+  <script type="module" src="firebase-init.js"></script>
+  <script type="module" src="auth.js"></script>
+
+
+  <style>
+    .product-title {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .product-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .col img {
+      max-width: 100%;
+      border-radius: 8px;
+    }
+
+    .col-images .slide-thumbs {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .col-images .slide-thumbs img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      cursor: pointer;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+
+    .price-section {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+    }
+
+    .price-section s {
+      color: #999;
+      margin-right: 8px;
+    }
+
+    .discounted {
+      color: green;
+      font-weight: bold;
+    }
+
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .qty-btn {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #ccc;
+      background: #f8f8f8;
+      cursor: pointer;
+    }
+
+    .qty-btn:hover {
+      background: #eee;
+    }
+
+    #qtyInput {
+      width: 50px;
+      text-align: center;
+      margin: 0 5px;
+    }
+
+    .meta p {
+      margin: 5px 0;
+    }
+
+    .in-stock {
+      color: green;
+      font-weight: bold;
+    }
+
+    .out-stock {
+      color: red;
+      font-weight: bold;
+    }
+
+    .description {
+      padding: 20px 0;
+      border-top: 1px solid #eee;
+    }
+
+
+    .btn-cart,
+    .btn-buy {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn-cart {
+      background: #e83a30;
+      color: #fff;
+    }
+
+    .btn-buy {
+      background: green;
+      color: #fff;
+    }
+
+    .btn-cart:hover {
+      background: #c72b22;
+    }
+
+    .btn-buy:hover {
+      background: #0d7a0d;
+    }
+
+    /* The main container that holds all variants (side by side row) */
+    .variant-options {
+      display: flex;
+      flex-direction: column;
+      /* row layout */
+      gap: 20px;
+      /* space between variants */
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    /* Each variant block (inside, options should be stacked vertically) */
+    .variant {
+      display: flex;
+      flex-direction: row;
+      /* column layout */
+      gap: 6px;
+      min-width: 120px;
+      /* keeps width consistent */
+      flex-shrink: 0;
+      /* prevents squishing on scroll */
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+
+
+    .variant-options::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .variant-options::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 4px;
+    }
+
+
+
+    /* ✅ Responsive adjustments */
+    @media (max-width: 992px) {
+      .product-layout {
+        grid-template-columns: 1fr 1fr;
+        /* Tablet: 2 columns */
+      }
+    }
+
+    @media (max-width: 768px) {
+      .product-layout {
+        grid-template-columns: 1fr;
+        /* Mobile: stack in row */
+        display: flex;
+        flex-direction: column;
+      }
+
+      .col-images .slide-thumbs img {
+        width: 50px;
+        height: 50px;
+      }
+
+      .variant-btn-wrapper {
+        flex-direction: column;
+        /* stack inside variants */
+        text-align: center;
+      }
+
+      .col-purchase {
+        margin-top: 20px;
+      }
+
+      .btn-cart,
+      .btn-buy {
+        padding: 10px;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* ✅ Quantity Selector Styling */
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .qty-btn {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border-color, #ccc);
+      background: var(--bg-color, #f8f8f8);
+      color: var(--text-color, #333);
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qty-btn:hover {
+      background: var(--hover-bg, #eee);
+      border-color: var(--hover-border, #bbb);
+    }
+
+    #qtyInput {
+      width: 60px;
+      height: 36px;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 600;
+      border: 1px solid var(--border-color, #ccc);
+      border-radius: 6px;
+      background: var(--bg-color, #fff);
+      color: var(--text-color, #000);
+      outline: none;
+    }
+
+    /* ✅ Dark Mode Support */
+    [data-theme="dark"] .qty-btn {
+      background: #333;
+      color: #fff;
+      border-color: #555;
+    }
+
+    [data-theme="dark"] .qty-btn:hover {
+      background: #444;
+      border-color: #777;
+    }
+
+    [data-theme="dark"] #qtyInput {
+      background: #222;
+      color: #fff;
+      border-color: #555;
+    }
+
+    /* ✅ Responsive adjustments */
+    @media (max-width: 480px) {
+      .quantity-selector {
+        gap: 5px;
+      }
+
+      .qty-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+      }
+
+      #qtyInput {
+        width: 50px;
+        height: 32px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <header class="main-header">
+
+    <div class="logo" onclick="window.location.href='products.html'" style="cursor: pointer;">
+      <span class="logo-text">
+        <sup><strong><b>CHINA TOWN</b></strong></sup><sub>Shop</sub>
+      </span>
+      <img src="assets/images/ChinaTown.png" alt="China Town Shop Logo" class="logo-img" />
+    </div>
+
+
+
+    <div class="search-row">
+      <input type="text" id="searchInputDesktop" placeholder="Search products..." />
+    </div>
+
+
+    <div class="icons">
+      <span class="icon" id="cartIcon" onclick="location.href='cart.html'">
+        <lord-icon src="https://cdn.lordicon.com/ggirntso.json" trigger="hover"
+          colors="primary:#e83a30,secondary:#e83a30">
+        </lord-icon>
+        <span class="badge hide" id="cartCount">0</span>
+      </span>
+      <span class="icon" id="favIcon" onclick="location.href='wishlist.html'">
+        <lord-icon src="https://cdn.lordicon.com/nvsfzbop.json" trigger="hover"
+          colors="primary:#e83a30,secondary:#e83a30">
+        </lord-icon>
+
+        <span class="badge hide" id="favCount">0</span>
+      </span>
+
+      <span class="icon" id="themeToggleIcon">
+        <img id="themeIconImg" src="assets/icons/moon.png" alt="Theme Icon" width="24" height="24" />
+      </span>
+
+      <span class="icon" id="userArea">
+        <lord-icon src="https://cdn.lordicon.com/kdduutaw.json" trigger="hover"
+          colors="primary:#c71f16,secondary:#e83a30" onclick="toggleLoginPopup()"> </lord-icon>
+      </span>
+
+
+
+    </div>
+
+
+
+  </header>
+
+
+
+  <div class="midd">
+    <div class="mobile-search mobile-only" style="position: fixed; z-index: 100;top: 60px;">
+      <input type="text" id="searchInputMobile" placeholder="Search products..." />
+    </div>
+  </div>
+  <!-- Mobile search bar (only visible on small screens) -->
+
+
+  <div class="main-content">
+    <!-- LEFT COLUMN: Categories -->
+    <aside class="left-sidebar">
+      <h3>Categories</h3>
+      <div id="categoryGrid" class="category-grid"></div>
+    </aside>
+
+    <!-- RIGHT COLUMN: Products -->
+    <section class="right-content">
+      <main>
+        <div id="loadingSpinner" class="spinner"></div>
+        <div class="product-details" id="product-details">
+          Loading...
+        </div>
+        <div id="productGrid" class="product-grid"></div>
+        <button id="loadMoreBtn" class="load-more-btn">Load More</button>
+      </main>
+
+      <!-- Floating Category Button (Mobile only) -->
+      <button id="openCategoryDrawer" class="floating-btn">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <div id="overlay" class="hidden"></div>
+
+
+      <!-- Mobile Category Drawer -->
+      <div id="categoryDrawer" class="category-drawer">
+        <div class="drawer-header">
+          <span id="drawerBack" class="hidden"><i class="fas fa-arrow-left"></i></span>
+          <span id="drawerTitle">Categories</span>
+          <span id="drawerClose"><i class="fas fa-times"></i></span>
+        </div>
+        <div id="drawerContent" class="drawer-content"></div>
+      </div>
+
+
+      <!-- Subcategory Drawer (Desktop only, initially hidden) -->
+      <div id="subCategoryDrawer" class="subcategory-drawer hidden">
+        <div class="drawer-header">
+          <span id="subDrawerTitle">Subcategories</span>
+          <span id="subDrawerClose"><i class="fas fa-times"></i></span>
+        </div>
+        <div id="subDrawerContent" class="drawer-content"></div>
+      </div>
+
+
+      <!--  LOGIN POPUP -->
+      <div id="loginPopup" class="login-popup hidden">
+        <div class="popup-content">
+          <h2 style="color: rgb(247, 38, 38);">Explore More By Log In</h2>
+
+          <!-- Google Button -->
+          <button onclick="loginGoogle()">
+            <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="btn-icon">
+            Sign in with Google
+          </button>
+
+          <!-- Facebook Button -->
+          <button onclick="loginFacebook()">
+            <img src="assets/icons/facebook.png" alt="Facebook" class="btn-icon">
+            Sign in with Facebook
+          </button>
+
+          <p>verify with WhatsApp/Telegram before ordering</p>
+          <button onclick="closeLoginPopup()">Close</button>
+        </div>
+
+      </div>
+
+      <!-- USER DRAWER -->
+
+      <div id="userDrawer" class="user-drawer">
+        <button class="drawer-close-btn" onclick="closeUserDrawer()">×</button>
+        <div class="drawer-content">
+          <div class="profile-header">
+            <img id="drawerProfileImg" class="drawer-profile-img" src="" alt="Profile Picture" />
+            <div class="profile-info">
+              <h3 id="drawerName">User Name</h3>
+              <p id="drawerEmail">Email</p>
+            </div>
+          </div>
+
+          <!-- Account Button -->
+          <button class="save-btn" onclick="openAccountPopup()">Account</button>
+
+          <!-- New Drawer Options -->
+          <ul class="drawer-options">
+            <li><a href="userorder.html">Orders</a></li>
+            <li><a href="makewish.html">Wishlist</a></li>
+            <li><a href="support.html">Support</a></li>
+          </ul>
+
+          <!-- Logout Button -->
+          <button class="logout-btn" onclick="logoutUser()">Logout</button>
+        </div>
+      </div>
+
+
+      <!-- Account Popup -->
+      <div id="accountPopup" class="login-popup">
+        <div class="popup-content">
+          <!-- Close icon at top-right -->
+          <button class="popup-close-icon" onclick="closeAccountPopup()">×</button>
+          <h2>Account Details</h2>
+          <form id="userInfoForm" onsubmit="event.preventDefault(); saveUserInfo();">
+            <label for="userBirthday">Birthday:</label>
+            <input type="date" id="userBirthday" />
+
+            <label for="userGender">Gender:</label>
+            <select id="userGender">
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+
+            <label for="userPhone">Phone Number:</label>
+            <input id="userPhone" type="tel" placeholder="+880..." />
+
+            <label for="userAddress">Address:</label>
+            <textarea id="userAddress" placeholder="Enter your address"></textarea>
+
+            <div class="button-group">
+              <button type="submit" class="save-btn">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+
+
+      <footer class="site-footer">
+        <p>&copy; 2025 China Town Shop. All rights reserved.</p>
+      </footer>
+    </section>
+  </div>
+
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+
+    const spreadsheetId = "1nr6fXL6wbUHlXZaiAQYEFBWLMAauevT8zOtMfXbHMYw";
+    // const sheetName = "China";
+    const apiKey = "AIzaSyC-crKfYn4PUeQXLIMIpCrfOVuuUXb4dfs";
+
+    const appsScriptEndpoint = "https://script.google.com/macros/s/AKfycbywL5OAII4O0RGMyGe5AgZsqrByQazZUnkuulEIzKMFMBDsN40eUvvaZ1I0OCLu0J8u/exec";
+
+    const API_URL =
+      `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}?includeGridData=true&key=${apiKey}`;
+
+    // const API_URL = "https://api.sheetbest.com/sheets/e4658b4d-6f90-496e-a29b-6ee864631ede";
+
+    fetch(API_URL)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.sheets || data.sheets.length === 0) {
+          document.getElementById("product-details").innerHTML = "No products found.";
+          return;
+        }
+
+        let products = [];
+
+        data.sheets.forEach(sheet => {
+          const rowData = sheet.data[0]?.rowData;
+          if (!rowData || rowData.length < 2) return;
+
+          const headers = rowData[0].values.map(cell => cell.formattedValue || "");
+          const sheetProducts = rowData.slice(1).map(row => {
+            const obj = {};
+            headers.forEach((h, i) => obj[h] = row.values[i]?.formattedValue || "");
+            return obj;
+          });
+
+          products = products.concat(sheetProducts);
+        });
+
+        const product = products.find(
+          p => (p.id || "").trim().toLowerCase() === (productId || "").trim().toLowerCase()
+        );
+
+        if (!product) {
+          document.getElementById("product-details").innerHTML = "Product not found.";
+          return;
+        }
+
+        const slides = [];
+        for (let i = 1; i <= 5; i++) {
+          const key = `slide${i}`;
+          if (product[key]) slides.push(product[key]);
+        }
+
+        // Extract all available variants
+        function getAllVariants(product) {
+          const variants = [];
+          for (let i = 1; i <= 6; i++) {
+            const img = product[`cat${i}img`];
+            const iname = product[`cat${i}iname`];
+            const size = product[`cat${i}size`];
+            const price = product[`cat${i}price`];
+            if (img || iname || size || price) {
+              variants.push({
+                id: `cat${i}`,
+                img,
+                iname,
+                size,
+                price: parseFloat(price) || 0,
+                qty: 0 // 🔹 initial quantity 0
+              });
+            }
+          }
+          return variants;
+        }
+
+        const variants = getAllVariants(product);
+
+        function renderProductDetails() {
+          const hasVariants = variants.length > 0;
+
+          document.getElementById("product-details").innerHTML = `
+    <h1 class="product-title">${product.name}</h1>
+    <div class="product-layout" style="grid-template-columns: 1fr 1fr 1fr;">
+      
+      <!-- Left Column: Main + Slides -->
+      <div class="col col-images">
+        <div class="main-image">
+          <img id="main-image" src="${product.image || slides[0]}" 
+              alt="${product.name}" style="width:100%;border-radius:8px;" />
+        </div>
+        <div class="slide-thumbs">
+          ${slides.map((s, i) => `
+            <img src="${s}" alt="slide-${i}" onclick="changeMainImage('${s}')">
+          `).join("")}
+        </div>
+      </div>
+
+      <!-- Middle Column -->
+      <div class="col col-variants">
+        ${hasVariants
+              ? `
+          <h4>Select Variants & Quantity</h4>
+         <div class="variant-options">
+
+            ${variants.map(v => `
+              <div class="variant-btn-wrapper" id="variant-${v.id}" 
+                  style="    position: relative;
+    text-align: justify;
+    display: flex;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    padding: 5px;
+    border-radius: 6px;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    align-content: center;
+    justify-content: space-around;
+    align-items: center;">
+                
+                ${v.img ? `<img src="${v.img}" alt="${v.iname}" 
+                        style="width:60px;height:60px;object-fit:cover;border-radius:6px;">` : ""}
+                
+                <span class="variant-qty-badge" 
+                      style="position:absolute;top:0;right:0;
+                            background:#e83a30;color:#fff;
+                            font-size:12px;padding:2px 6px;
+                            border-radius:50%;display:${v.qty > 0 ? 'inline-block' : 'none'};">
+                  ${v.qty}
+                </span>
+                
+                <div style="font-size:0.8rem;">${v.iname || ""}</div>
+                ${v.size ? `<div style="font-size:0.75rem;color:#555;">${v.size}</div>` : ""}
+                <div style="color:green;font-weight:bold;">৳${v.price.toFixed(2)}</div>
+
+                <div style="margin-top:5px;display:flex;align-items:center;justify-content:center;gap:5px;">
+                  <button onclick="updateVariantQty('${v.id}',-1)" class="qty-btn">-</button>
+                  <span id="qty-${v.id}">${v.qty}</span>
+                  <button onclick="updateVariantQty('${v.id}',1)" class="qty-btn">+</button>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+          `
+              : `
+          <h4>Price</h4>
+          <div class="price-section">
+            ${(product.discount_price &&
+                parseFloat(product.discount_price) > 0 &&
+                parseFloat(product.discount_price) < parseFloat(product.current_price || 0))
+                ? `<s>৳${parseFloat(product.current_price || 0).toFixed(2)}</s>
+                <span class="discounted">৳${parseFloat(product.discount_price).toFixed(2)}</span>`
+                : `<span class="discounted">৳${parseFloat(product.current_price || 0).toFixed(2)}</span>`}
+
+          </div>
+
+           <!-- ✅ Quantity Selector for no-variant products -->
+            <div class="quantity-selector">
+             <button class="qty-btn" onclick="updateQty(-1)">-</button>
+             <input type="text" id="qtyInput" value="1" readonly />
+             <button class="qty-btn" onclick="updateQty(1)">+</button>
+            </div>
+          `
+            }
+      </div>
+
+      <!-- Right Column: Purchase -->
+      <div class="col col-purchase">
+        ${hasVariants
+              ? `
+          <div class="price-section">
+            <div><strong>Total Amount:</strong> ৳<span id="totalPrice">0.00</span></div>
+          </div>
+          `
+              : ""
+            }
+
+        <div class="meta">
+          <p><strong>Brand:</strong> ${product.brand || "N/A"}</p>
+          <p><strong>Category:</strong> ${product.category || "N/A"}</p>
+          <p><strong>Subcategory:</strong> ${product.sub_category || "N/A"}</p>
+          <p><strong>Code:</strong> ${product.code || "N/A"}</p>
+          <p><strong>Status:</strong> 
+  ${(() => {
+              const inStock = parseInt(product.in_stock) || 0;
+              const available = (product.available || "").toLowerCase() === "yes";
+              const preOrder = (product.pre_order || "").toLowerCase() === "yes";
+
+              if (inStock > 0 && available) {
+                // ✅ Stock available
+                return "<span class='in-stock'>In Stock</span>";
+              } else if (inStock <= 0 && !available && preOrder) {
+                // ✅ No stock + not available → allow pre-order
+                return "<span style='color:orange;font-weight:bold;'>Pre-Order Available</span>";
+              } else {
+                // ✅ Default case → out of stock
+                return "<span class='out-stock'>Out of Stock</span>";
+              }
+            })()}
+          </p>
+
+        </div>
+
+        <div style="margin-top:15px; display:flex; gap:10px;">
+  ${(() => {
+              const inStock = parseInt(product.in_stock) || 0;
+              const available = (product.available || "").toLowerCase() === "yes";
+              const preOrder = (product.pre_order || "").toLowerCase() === "yes";
+
+              if (inStock > 0 && available) {
+                // ✅ Normal case → Show Add to Cart + Buy Now
+                return `
+        <button id="addToCartBtn" class="btn-cart">Add to Cart</button>
+        <button id="buyNowBtn" class="btn-buy">Buy Now</button>
+      `;
+              } else if (inStock <= 0 && !available && preOrder) {
+                // ✅ Pre-order case → Hide Add to Cart, Show Pre Order Now
+                return `
+        <button id="buyNowBtn" class="btn-buy">Pre Order Now</button>
+      `;
+              } else {
+                // ✅ Out of Stock → Disable buttons
+                return `
+        <button class="btn-cart" disabled style="opacity:0.6;cursor:not-allowed;">Add to Cart</button>
+        <button class="btn-buy" disabled style="opacity:0.6;cursor:not-allowed;">Buy Now</button>
+      `;
+              }
+            })()}
+</div>
+
+      </div>
+    </div>
+  `;
+
+          // Description row
+          document.getElementById("product-details").innerHTML += `
+  <div class="description">
+    <h3>Description</h3>
+    <p>${product.desciption || "No description available."}</p>
+  </div>
+`;
+
+
+          // Description row
+          document.getElementById("product-details").innerHTML += `
+  <div class="more">
+    <h3>You May Also Like </h3>
+`;
+
+          if (hasVariants) {
+            updateTotalPrice();
+          }
+          const buyNowBtn = document.getElementById("buyNowBtn");
+          if (buyNowBtn) {
+            const preOrder = (product.pre_order || "").toLowerCase() === "yes";
+            buyNowBtn.onclick = preOrder ? preOrderNow : buyNow;
+          }
+
+          const addToCartBtn = document.getElementById("addToCartBtn");
+          if (addToCartBtn) addToCartBtn.onclick = addToCart;
+
+        }
+
+        // 🔹 Update variant qty
+        function updateVariantQty(variantId, change) {
+          const v = variants.find(x => x.id === variantId);
+          if (!v) return;
+          v.qty = Math.max(0, v.qty + change);
+
+          // Update UI
+          document.getElementById(`qty-${v.id}`).innerText = v.qty;
+          const badge = document.querySelector(`#variant-${v.id} .variant-qty-badge`);
+          if (badge) {
+            badge.style.display = v.qty > 0 ? "inline-block" : "none";
+            badge.innerText = v.qty;
+          }
+
+          updateTotalPrice();
+        }
+        window.updateVariantQty = updateVariantQty;
+
+        // 🔹 Total price across all variants
+        function updateTotalPrice() {
+          let total = 0;
+          variants.forEach(v => total += v.price * v.qty);
+          document.getElementById("totalPrice").innerText = total.toFixed(2);
+        }
+
+
+
+
+
+        function addToCart() {
+          let cartData = [];
+
+          if (variants.length > 0) {
+            cartData = variants
+              .filter(v => v.qty > 0)
+              .map(v => ({
+                id: product.id,
+                code: product.code,   // ✅ added here
+                name: `${product.name} - ${v.iname || v.size}`,
+                image: v.image || product.image,
+                price: v.price,
+                finalPrice: v.price,
+                quantity: v.qty,
+                variantId: v.id,
+                variantName: v.iname,
+                variantSize: v.size
+              }));
+
+          } else {
+            const qty = parseInt(document.getElementById("qtyInput").value) || 1;
+            const price = parseFloat(product.discount_price) > 0 &&
+              parseFloat(product.discount_price) < parseFloat(product.current_price || 0)
+              ? parseFloat(product.discount_price)
+              : parseFloat(product.current_price || 0);
+
+            cartData = [{
+              id: product.id,
+              name: product.name,
+              image: product.image,
+              price: price,
+              finalPrice: price,
+              quantity: qty,
+              variantId: null,
+              variantName: null,
+              variantSize: null
+            }];
+          }
+
+          if (cartData.length === 0) {
+            alert("Please select at least one variant or quantity.");
+            return;
+          }
+
+          let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+          // ✅ Merge with existing items
+          cartData.forEach(item => {
+            const existing = cart.find(
+              c => c.id === item.id && c.variantId === item.variantId
+            );
+            if (existing) {
+              existing.quantity += item.quantity;
+            } else {
+              cart.push(item);
+            }
+          });
+
+          localStorage.setItem("cart", JSON.stringify(cart));
+
+          // ✅ Show popup
+          showCartPopup(product.name);
+
+          // ✅ Update cart badge
+          document.getElementById("cartCount").innerText = cart.length;
+          document.getElementById("cartCount").classList.remove("hide");
+        }
+
+
+
+
+
+        function showCartPopup(productName) {
+          const popup = document.createElement("div");
+          popup.innerText = `${productName} has been added to your cart!`;
+          popup.style.position = "fixed";
+          popup.style.bottom = "20px";
+          popup.style.right = "20px";
+          popup.style.padding = "12px 20px";
+          popup.style.background = "#28a745";
+          popup.style.color = "#fff";
+          popup.style.fontWeight = "bold";
+          popup.style.borderRadius = "6px";
+          popup.style.zIndex = "9999";
+          popup.style.boxShadow = "0 2px 8px rgba(0,0,0,0.3)";
+          document.body.appendChild(popup);
+
+          setTimeout(() => {
+            popup.remove();
+          }, 2500);
+        }
+
+        function buyNow() {
+          let checkoutItems = [];
+
+          if (variants.length > 0) {
+            checkoutItems = variants
+              .filter(v => v.qty > 0)
+              .map(v => ({
+                id: product.id,
+                code: product.code,
+                name: `${product.name} - ${v.iname || v.size}`,
+                image: v.image || product.image,
+                price: v.price,
+                finalPrice: v.price,
+                quantity: v.qty,
+                variantId: v.id,
+                variantName: v.iname,
+                variantSize: v.size
+              }));
+          } else {
+            const qty = parseInt(document.getElementById("qtyInput").value) || 1;
+            const price = parseFloat(product.discount_price) > 0 &&
+              parseFloat(product.discount_price) < parseFloat(product.current_price || 0)
+              ? parseFloat(product.discount_price)
+              : parseFloat(product.current_price || 0);
+
+            checkoutItems = [{
+              id: product.id,
+              code: product.code,
+              name: product.name,
+              image: product.image,
+              price: price,
+              finalPrice: price,
+              quantity: qty,
+              variantId: null,
+              variantName: null,
+              variantSize: null
+            }];
+          }
+
+          if (checkoutItems.length === 0) {
+            alert("Please select at least one variant or quantity.");
+            return;
+          }
+
+          // ✅ Save to localStorage
+          localStorage.setItem("checkoutItems", JSON.stringify(checkoutItems));
+
+          // ✅ Send to buynow.html
+          window.location.href = "buynow.html";
+        }
+
+        function preOrderNow() {
+          const preOrderData = {
+            id: product.id,
+            code: product.code,
+            name: product.name,
+            image: product.image,
+            note: "Pre-Order Requested",
+            timestamp: new Date().toISOString()
+          };
+
+          localStorage.setItem("preOrderItem", JSON.stringify(preOrderData));
+
+          // ✅ Send to preorder.html
+          window.location.href = "userpreorder.html";
+        }
+
+        renderProductDetails();
+      });
+
+    function updateQty(change) {
+      const qtyInput = document.getElementById("qtyInput");
+      let value = parseInt(qtyInput.value) || 1;
+      value = Math.max(1, value + change);
+      qtyInput.value = value;
+    }
+
+    function preOrderNow() {
+      // For pre-orders, we only collect product + user intention
+      const preOrderData = {
+        id: product.id,
+        code: product.code,
+        name: product.name,
+        image: product.image,
+        note: "Pre-Order Requested",
+        timestamp: new Date().toISOString()
+      };
+
+      localStorage.setItem("preOrderItem", JSON.stringify(preOrderData));
+      window.location.href = "preorder.html"; // ✅ You can redirect to your preorder form page
+    }
+
+
+
+    function hideProductDetails() {
+      const details = document.getElementById("product-details");
+      if (details) details.style.display = "none";
+    }
+
+    function showProductDetails() {
+      const details = document.getElementById("product-details");
+      if (details) details.style.display = "block";
+    }
+
+
+
+
+  </script>
+
+
+  <!-- ================= FIREBASE SDK ================= -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+  <script type="module" src="firebase-init.js"></script>
+  <script src="product.js"></script>
+  <script type="module" src="authproducts.js"></script>
+</body>
+
+</html>

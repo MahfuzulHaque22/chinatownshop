@@ -1,0 +1,52 @@
+<div class="profile-page">
+  <h2>Edit Profile</h2>
+  <form id="profile-form">
+    <label for="name">Name:</label>
+    <input type="text" id="name" required>
+    
+    <label for="email">Email:</label>
+    <input type="email" id="email" required disabled>
+    
+    <label for="password">New Password:</label>
+    <input type="password" id="password" placeholder="Leave blank to keep current">
+    
+    <button type="submit">Save Changes</button>
+  </form>
+  <div id="profile-msg" style="margin-top:10px;color:green;"></div>
+</div>
+
+<script>
+  const user = firebase.auth().currentUser;
+  const profileForm = document.getElementById("profile-form");
+  const msg = document.getElementById("profile-msg");
+
+  // Load current user info
+  firebase.firestore().collection("users").doc(user.uid).get().then(doc => {
+    if (doc.exists) {
+      document.getElementById("name").value = doc.data().name || "";
+      document.getElementById("email").value = doc.data().email || user.email;
+    }
+  });
+
+  profileForm.addEventListener("submit", async e => {
+    e.preventDefault();
+    const newName = document.getElementById("name").value;
+    const newPassword = document.getElementById("password").value;
+
+    try {
+      // Update name in Firestore
+      await firebase.firestore().collection("users").doc(user.uid).update({ name: newName });
+
+      // Update password if provided
+      if (newPassword.trim() !== "") {
+        await user.updatePassword(newPassword);
+      }
+
+      msg.textContent = "Profile updated successfully!";
+    } catch (err) {
+      console.error(err);
+      msg.style.color = "red";
+      msg.textContent = "Error updating profile: " + err.message;
+    }
+  });
+</script>

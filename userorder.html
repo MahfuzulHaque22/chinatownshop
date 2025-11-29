@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Responsive Floating Nav</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Jost&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.lordicon.com/lordicon.js"></script>
+  <link rel="stylesheet" href="common.css">
+
+  <style>
+    /* Toggle switch */
+    .toggle-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .toggle-label {
+      margin: 0 10px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 32px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 32px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 24px;
+      width: 24px;
+      left: 4px;
+      bottom: 4px;
+      background-color: var(--bg-color);
+      ;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked+.slider {
+      background-color: #ff3939;
+    }
+
+    input:checked+.slider:before {
+      transform: translateX(28px);
+    }
+
+    .order-card {
+      background: var(--bg-color);
+      border-radius: 12px;
+      color: var(--text-color);
+      padding: 20px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 12px;
+      color: var(--text-color);
+    }
+
+    .order-products {
+      font-size: 0.95rem;
+      margin-bottom: 25px;
+      color: var(--text-color);
+    }
+
+    /* Timeline */
+    .timeline-container {
+      margin-bottom: 20px;
+    }
+
+    .timeline-icons {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .timeline-step-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      flex: 1;
+    }
+
+    .timeline-step-icon i {
+      font-size: 22px;
+      color: var(--text-color);
+      margin-bottom: 6px;
+      transition: color 0.3s;
+    }
+
+    #span {
+      color: var(--text-color);
+    }
+
+    .timeline-step-icon.completed i {
+      color: #4caf50;
+    }
+
+    .timeline-step-icon span {
+      font-size: 0.85rem;
+      color: #555;
+    }
+
+    .timeline-step-icon.completed span {
+      color: #4caf50;
+      font-weight: 600;
+    }
+
+    .timeline-bar-container {
+      position: relative;
+      width: 100%;
+      height: 6px;
+      background: #ddd;
+      border-radius: 3px;
+    }
+
+    .timeline-bar-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 6px;
+      background: #4caf50;
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+
+    /* Active step bounce animation */
+    .timeline-step-icon.active i lord-icon {
+      animation: bounce 1s infinite alternate;
+    }
+
+    @keyframes bounce {
+      0% {
+        transform: translateY(0);
+      }
+
+      100% {
+        transform: translateY(-8px);
+      }
+    }
+
+
+    @media(max-width:600px) {
+      .timeline-icons {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .timeline-step-icon {
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+
+      .timeline-step-icon i {
+        margin-right: 12px;
+        margin-bottom: 0;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="header-wrapper">
+    <header class="header" id="mainHeader">
+      <div class="logo">
+        <span class="logo-text">
+          <sup><strong><b>CHINA TOWN</b></strong></sup><sub>Shop</sub>
+        </span>
+        <img src="assets/images/ChinaTown.png" alt="China Town Shop Logo" class="logo-img" />
+      </div>
+
+      <nav class="navbar" id="navbar">
+        <a href="index.html">Home</a>
+        <a href="brand.html">Brands</a>
+        <a href="products.html">Products</a>
+        <a href="wholesale.html">Wholesale</a>
+        <a href="make-a-wish.html">Make a Wish</a>
+      </nav>
+
+
+      <div class="controls">
+        <button class="icon-btn desktop-only" id="categoryBtnInside">
+          <img src="assets/icons/categories.png" class="icon-img" alt="Category Icon">
+        </button>
+
+        <button class="icon-btn" id="themeToggleIcon">
+          <img src="assets/icons/moon.png" alt="Toggle Theme" class="icon-img" id="themeIconImg">
+        </button>
+
+
+
+        <button class="icon-btn desktop-only" id="userBtnInside">
+          <img src="assets/icons/user.png" class="icon-img" alt="User Icon">
+        </button>
+
+
+
+        <button class="icon-btn mobile-only" id="menuToggle">
+          <img src="assets/icons/menu.png" class="icon-img" alt="Menu Icon">
+        </button>
+      </div>
+    </header>
+  </div>
+
+
+
+
+  <div id="loginPopup" class="login-popup">
+    <div class="popup-content">
+      <h2 style="color: rgb(247, 38, 38);">Explore More By Log In</h2>
+
+      <!-- Google Button -->
+      <button onclick="loginGoogle()">
+        <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="btn-icon">
+        Sign in with Google
+      </button>
+
+      <!-- Facebook Button -->
+      <button onclick="loginFacebook()">
+        <img src="assets/icons/facebook.png" alt="Facebook" class="btn-icon">
+        Sign in with Facebook
+      </button>
+
+      <p>verify with WhatsApp/Telegram before ordering</p>
+      <button onclick="closeLoginPopup()">Close</button>
+    </div>
+  </div>
+
+
+
+
+  <div id="userDrawer" class="user-drawer">
+    <button class="drawer-close-btn" onclick="closeUserDrawer()">×</button>
+    <div class="drawer-content">
+      <div class="profile-header">
+        <img id="drawerProfileImg" class="drawer-profile-img" src="" alt="Profile Picture" />
+        <div class="profile-info">
+          <h3 id="drawerName">User Name</h3>
+          <p id="drawerEmail">Email</p>
+        </div>
+      </div>
+
+      <!-- Account Button -->
+      <button class="save-btn" onclick="openAccountPopup()">Account</button>
+
+      <!-- New Drawer Options -->
+      <ul class="drawer-options">
+        <li><a href="userorder.html">Orders</a></li>
+        <li><a href="makewish.html">Wishlist</a></li>
+        <li><a href="support.html">Support</a></li>
+      </ul>
+
+      <!-- Logout Button -->
+      <button class="logout-btn" onclick="logoutUser()">Logout</button>
+    </div>
+  </div>
+
+
+  <!-- Account Popup -->
+  <div id="accountPopup" class="login-popup">
+    <div class="popup-content">
+      <!-- Close icon at top-right -->
+      <button class="popup-close-icon" onclick="closeAccountPopup()">×</button>
+      <h2>Account Details</h2>
+      <form id="userInfoForm" onsubmit="event.preventDefault(); saveUserInfo();">
+        <label for="userBirthday">Birthday:</label>
+        <input type="date" id="userBirthday" />
+
+        <label for="userGender">Gender:</label>
+        <select id="userGender">
+          <option value="">Select Gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+
+        <label for="userPhone">Phone Number:</label>
+        <input id="userPhone" type="tel" placeholder="+880..." />
+
+        <label for="userAddress">Address:</label>
+        <textarea id="userAddress" placeholder="Enter your address"></textarea>
+
+        <div class="button-group">
+          <button type="submit" class="save-btn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="drawerOverlay" class="drawer-overlay" onclick="closeUserDrawer()"></div>
+
+
+
+
+
+
+  <div id="categoryDrawer">
+    <header>
+      Category
+      <button id="closeCategoryDrawer" aria-label="Close category drawer">&times;</button>
+    </header>
+
+    <div class="category-content">
+      <div id="subcategoryHeader">
+        <button id="backToMain">&larr;</button>
+        <span id="selectedCategoryName"></span>
+      </div>
+
+      <ul id="mainCategoryList"></ul>
+      <ul id="subcategoryList"></ul>
+    </div>
+  </div>
+
+  <div id="overlay" onclick="closeCategoryDrawerFn()"></div>
+  <button class="floating-close" onclick="closeCategoryDrawerFn()">×</button>
+
+
+
+  <!-- Floating Close Button -->
+  <button id="closeCategoryDrawer" class="floating-close" onclick="closeDrawer()">×</button>
+
+
+
+
+
+  <div id="drawerOverlay" class="drawer-overlay" onclick="closeUserDrawer()"></div>
+
+  <div class="mobile-drawer" id="mobileDrawer">
+    <button id="closeDrawer" class="drawer-close">&times;</button>
+    <a href="index.html">Home</a>
+    <a href="brand.html">Brands</a>
+    <a href="products.html">Products</a>
+    <a href="wholesale.html">Wholesale</a>
+    <a href="make-a-wish.html">Make a Wish</a>
+  </div>
+
+  <main class="content">
+    <section class="custom-section">
+      <div class="main-layout">
+        <div class="big-box">
+          <div class="">
+
+
+            <h1 style="display: flex; justify-content: center; text-align: center; margin-top: 60px;">My Orders</h1>
+
+            <!-- Toggle -->
+            <div class="toggle-container">
+              <span class="toggle-label" style="color: var(--text-color);">Orders</span>
+              <label class="switch">
+                <input type="checkbox" id="toggleType">
+                <span class="slider"></span>
+              </label>
+              <span class="toggle-label" style="color: var(--text-color);">Preorders</span>
+            </div>
+
+            <div id="ordersList" style="color: var(--bg-color); ">Loading your orders...</div>
+            <!-- <img src="assets/images/banner1.png" class="fade-slide active" alt="Image 1">
+            <img src="assets/images/banner2.png" class="fade-slide" alt="Image 2">
+            <img src="assets/images/banner3.png" class="fade-slide" alt="Image 3"> -->
+
+            <!-- Button for Slide 1 -->
+            <a href="products.html" class="shop-now-btn shop-now-left active" style="display: none;">Shop Now</a>
+
+            <!-- Button for Slide 2 -->
+            <a href="products.html" class="shop-now-btn shop-now-right" style="display: none;">Shop Now</a>
+          </div>
+        </div>
+
+
+        <!-- <div class="small-box-container">
+          <div class="small-box">
+            <h3>Small Box 1</h3>
+            <p>Some quick info here.</p>
+          </div>
+          <div class="small-box">
+            <h3>Small Box 2</h3>
+            <p>Some more info here.</p>
+          </div>
+        </div> -->
+      </div>
+    </section>
+  </main>
+
+
+
+
+
+
+
+
+
+
+
+  <button class="icon-btn floating-btn left" id="floatingCategory">
+    <img src="assets/icons/categories.png" class="icon-img" alt="Category Icon">
+  </button>
+
+  <button class="icon-btn floating-btn right" data-btn="userBtnInside" id="floatingUser">
+    <img src="assets/icons/user.png" class="icon-img" alt="User Icon">
+  </button>
+
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <h4>China Town Shop</h4>
+        <p>Your one-stop shop for quality and affordability.</p>
+      </div>
+
+      <div class="footer-row">
+        <div class="footer-col" style="display: flex; justify-content:center; align-items: center;">
+          <img src="assets/images/logo.png" style="width: 140px; height:140px;">
+        </div>
+
+
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="brand.html">Brand</a></li>
+            <li><a href="products.html">Product</a></li>
+            <li><a href="wholesale.html">Wholesale</a></li>
+            <li><a href="wish.html">Make a Wish</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Customer Service</h4>
+          <ul>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Returns</a></li>
+            <li><a href="#">Shipping Info</a></li>
+            <li><a href="#">Track Order</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Follow Us</h4>
+          <div class="social-icons">
+            <a href="https://www.facebook.com/profile.php?id=61573035666869">
+              <lord-icon src="https://cdn.lordicon.com/lplofcfe.json" trigger="hover"
+                colors="primary:#e83a30,secondary:#1663c7">
+              </lord-icon>
+            </a>
+            <a href="https://wa.me/+8801333180868">
+              <lord-icon src="https://cdn.lordicon.com/dnphlhar.json" trigger="hover"
+                colors="primary:#16c72e,secondary:#e83a30">
+              </lord-icon>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer-newsletter">
+        <h4>Subscribe</h4>
+        <form>
+          <input type="email" placeholder="Enter your email" />
+          <button type="submit">Join</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 China Town Shop. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="userorder.js"></script>
+  <script src="route.js" defer></script>
+
+
+  <script type="module" src="auth.js"></script>
+  <script type="module">
+    import { db, auth } from "./firebase-init.js";
+    import {
+      collection,
+      query,
+      where,
+      orderBy,
+      onSnapshot,
+      doc,
+      getDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js";
+
+    // Steps and icons for orders
+    const orderSteps = [
+      { key: "order_placed_payment_in_review", label: "Order Placed", lordIcon: "https://cdn.lordicon.com/lupuorrc.json" },
+      { key: "payment_confirmed", label: "Payment Confirmed", lordIcon: "https://cdn.lordicon.com/ysqeagpz.json" },
+      { key: "product_in_query", label: "Processing", lordIcon: "https://cdn.lordicon.com/nocovwne.json" },
+      { key: "product_in_delivery", label: "On Delivery", lordIcon: "https://cdn.lordicon.com/byupthur.json" },
+      { key: "order_complete", label: "Completed", lordIcon: "https://cdn.lordicon.com/gqdnbnwt.json" }
+    ];
+
+    const preorderSteps = [
+      { key: "accepted", label: "Accepted", lordIcon: "https://cdn.lordicon.com/hjeefwhm.json" },
+      { key: "payment_complete", label: "Payment Complete", lordIcon: "https://cdn.lordicon.com/ysqeagpz.json" },
+      { key: "in_query", label: "Processing", lordIcon: "https://cdn.lordicon.com/nocovwne.json" },
+      { key: "available_in_store", label: "Available in Store", lordIcon: "https://cdn.lordicon.com/vvyxyrur.json" },
+      { key: "complete", label: "Completed", lordIcon: "https://cdn.lordicon.com/gqdnbnwt.json" }
+    ];
+
+
+    const ordersList = document.getElementById("ordersList");
+    const toggleType = document.getElementById("toggleType");
+    let unsubscribe = null;
+
+    async function getCurrentUser() {
+      let user = JSON.parse(localStorage.getItem("user"));
+      if (!user) {
+        user = await new Promise(resolve => {
+          auth.onAuthStateChanged(u =>
+            resolve(
+              u
+                ? {
+                  uid: u.uid,
+                  email: u.email,
+                  photoURL: u.photoURL,
+                  role: u.role || "user"
+                }
+                : null
+            )
+          );
+        });
+      }
+
+      if (user) {
+        // 🔥 Fetch Firestore profile
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (userDoc.exists()) {
+          const data = userDoc.data();
+          user.name = data.name || user.name || user.email.split("@")[0];
+          user.phone = data.phone || "";
+          user.address = data.address || "";
+          user.gender = data.gender || "";
+          user.birthday = data.birthday || "";
+          user.photoURL = data.photoURL || user.photoURL || "assets/icons/user.png";
+        }
+        // Save back to localStorage for reuse
+        localStorage.setItem("user", JSON.stringify(user));
+      }
+
+      // Update Drawer UI
+      if (user) {
+        document.getElementById("drawerName").textContent = user.name || "User Name";
+        document.getElementById("drawerEmail").textContent = user.email || "Email";
+        document.getElementById("drawerProfileImg").src =
+          user.photoURL || "assets/icons/user.png";
+      }
+
+      return user;
+    }
+
+    async function loadData(collectionName, type = "orders") {
+      const user = await getCurrentUser();
+
+      if (!user) {
+        ordersList.innerHTML = `<p>Please log in to view your ${type}.</p>`;
+        return;
+      }
+
+      // Build query
+      let q;
+      if (user.role === "admin") {
+        q = query(collection(db, collectionName), orderBy("createdAt", "desc"));
+      } else {
+        if (type === "preorders") {
+          q = query(
+            collection(db, collectionName),
+            where("userId", "==", user.uid),
+            orderBy("createdAt", "desc")
+          );
+        } else {
+          q = query(
+            collection(db, collectionName),
+            where("uid", "==", user.uid),
+            orderBy("createdAt", "desc")
+          );
+        }
+      }
+
+      // Detach old listener
+      if (unsubscribe) unsubscribe();
+
+      unsubscribe = onSnapshot(
+        q,
+        snapshot => {
+          ordersList.innerHTML = "";
+          if (snapshot.empty) {
+            ordersList.innerHTML = `<p>No ${type} found.</p>`;
+            return;
+          }
+
+          snapshot.forEach(docSnap => {
+            const order = docSnap.data();
+            const card = document.createElement("div");
+            card.className = "order-card";
+
+            // Header
+            const header = document.createElement("div");
+            header.className = "order-header";
+            const orderDate = order.createdAt?.toDate
+              ? order.createdAt.toDate().toLocaleString()
+              : "";
+            const products = document.createElement("div");
+            products.className = "order-products";
+
+            if (type === "preorders") {
+              header.innerHTML = `Preorder ID: ${docSnap.id} ${orderDate ? "| " + orderDate : ""
+                }`;
+              products.innerHTML = `Product: ${order.productName} (Code: ${order.productCode})`;
+            } else {
+              header.innerHTML = `Order ID: ${docSnap.id} | Amount: ৳${order.amount || 0
+                } ${orderDate ? "| " + orderDate : ""}`;
+              products.innerHTML =
+                "Products: " +
+                (order.items || [])
+                  .map(i => `${i.name} x${i.quantity || 1}`)
+                  .join(", ");
+            }
+
+            card.appendChild(header);
+            card.appendChild(products);
+
+            // Timeline
+            const timelineContainer = document.createElement("div");
+            timelineContainer.className = "timeline-container";
+            const iconsContainer = document.createElement("div");
+            iconsContainer.className = "timeline-icons";
+
+            const steps = type === "orders" ? orderSteps : preorderSteps;
+            const currentStepIndex = steps.findIndex(s => s.key === order.status);
+
+            steps.forEach((stepObj, idx) => {
+              const stepEl = document.createElement("div");
+              stepEl.className = "timeline-step-icon";
+
+              if (idx <= currentStepIndex) stepEl.classList.add("completed");
+              if (idx === currentStepIndex) stepEl.classList.add("active"); // current active step
+
+              // Create lord-icon
+              const iconEl = document.createElement("lord-icon");
+              iconEl.setAttribute("src", stepObj.lordIcon); // assign lord-icon URL
+              iconEl.setAttribute("trigger", "loop");
+              iconEl.setAttribute("colors", "primary:#4caf50,secondary:#a0e5a9");
+              iconEl.style.width = "30px";
+              iconEl.style.height = "30px";
+
+              stepEl.appendChild(iconEl);
+
+              const labelEl = document.createElement("span");
+              labelEl.textContent = stepObj.label;
+              stepEl.appendChild(labelEl);
+
+              iconsContainer.appendChild(stepEl);
+            });
+
+
+            timelineContainer.appendChild(iconsContainer);
+
+            const barContainer = document.createElement("div");
+            barContainer.className = "timeline-bar-container";
+
+            const barFill = document.createElement("div");
+            barFill.className = "timeline-bar-fill";
+            barFill.style.width =
+              currentStepIndex >= 0
+                ? (currentStepIndex / (steps.length - 1)) * 100 + "%"
+                : "0%";
+            barContainer.appendChild(barFill);
+
+            const marker = document.createElement("div");
+            marker.className = "timeline-marker";
+            marker.style.left =
+              currentStepIndex >= 0
+                ? (currentStepIndex / (steps.length - 1)) * 100 + "%"
+                : "0%";
+            barContainer.appendChild(marker);
+
+            timelineContainer.appendChild(barContainer);
+            card.appendChild(timelineContainer);
+
+            ordersList.appendChild(card);
+          });
+        },
+        error => {
+          console.error("Error fetching " + type + ":", error);
+          ordersList.innerHTML = `<p>Failed to load ${type}. Try again later.</p>`;
+        }
+      );
+    }
+
+    // Initial load
+    loadData("orders", "orders");
+
+    // Toggle switch
+    toggleType.addEventListener("change", e => {
+      if (e.target.checked) {
+        document.querySelector("h1").textContent = "My Preorders";
+        loadData("preorders", "preorders");
+      } else {
+        document.querySelector("h1").textContent = "My Orders";
+        loadData("orders", "orders");
+      }
+    });
+  </script>
+
+</body>
+
+</html>

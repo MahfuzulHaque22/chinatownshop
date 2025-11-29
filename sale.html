@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sales Dashboard</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Jost&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="sale.css" />
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+</head>
+
+<body>
+    <header class="page-header">
+        <h1>Sales Dashboard</h1>
+    </header>
+
+    <!-- Summary row -->
+    <section class="summary-grid">
+        <!-- Card 1: Total Sales (month top-right, day bottom-left) -->
+        <div class="summary-card">
+            <h3>Total Sales (BDT)</h3>
+            <div class="summary-layout">
+                <div class="bottom-left">
+                    <span class="label">Today</span>
+                    <span id="salesToday" class="value">0</span>
+                </div>
+                <div class="top-right">
+                    <span class="label">This Month</span>
+                    <span id="salesThisMonth" class="value">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Profit (day + month) -->
+        <div class="summary-card">
+            <h3>Profit (BDT)</h3>
+            <div class="summary-layout">
+                <div class="bottom-left">
+                    <span class="label">Today</span>
+                    <span id="profitToday" class="value">0</span>
+                </div>
+                <div class="top-right">
+                    <span class="label">This Month</span>
+                    <span id="profitThisMonth" class="value">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Last Month (sales + profit) -->
+        <div class="summary-card">
+            <h3>Last Month</h3>
+            <div class="summary-layout">
+                <div class="bottom-left">
+                    <span class="label">Sales</span>
+                    <span id="salesLastMonth" class="value">0</span>
+                </div>
+                <div class="top-right">
+                    <span class="label">Profit</span>
+                    <span id="profitLastMonth" class="value">0</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="filters card">
+        <div class="filter-row">
+            <label for="rangeSelect">Filter:</label>
+            <select id="rangeSelect">
+                <option value="today" selected>Today</option>
+                <option value="yesterday">Yesterday</option>
+                <option value="last7">Last 7 Days</option>
+                <option value="last15">Last 15 Days</option>
+                <option value="last30">Last 30 Days</option>
+            </select>
+
+            <input type="date" id="singleDate" />
+            <button id="applyDateBtn">Apply Date</button>
+
+            <button id="refreshBtn">Refresh</button>
+        </div>
+        <p class="hint">Tip: Click “Apply Date” to see a specific day. Default timezone: Asia/Dhaka.</p>
+    </section>
+
+    <!-- Sales list -->
+    <section class="card">
+        <h3>Sales (Detailed)</h3>
+        <div class="table-wrap">
+            <table class="sales-table" id="salesTable">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Customer</th>
+                        <th>Phone</th>
+                        <th>Items</th>
+                        <th>Discount?</th>
+                        <th>Payment</th>
+                        <th>Total (BDT)</th>
+                        <th>Profit (BDT)</th>
+                        <th>Actions</th>
+
+                    </tr>
+                </thead>
+                <tbody id="salesTbody">
+                    <!-- rows injected by JS -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+
+    <div id="editModal" class="modal" style="display:none;">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Edit Sale</h3>
+            </div>
+            <div class="modal-body">
+                <section class="customer-info">
+                    <label>Customer Name: <input type="text" id="editCustomerName"></label>
+                    <label>Phone: <input type="text" id="editCustomerPhone"></label>
+                    <label>Payment Method: <input type="text" id="editPaymentMethod"></label>
+                </section>
+
+                <section class="items-section">
+                    <h4>Items</h4>
+                    <div class="table-container">
+                        <table id="editItemsTable">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Qty</th>
+                                    <th>Price</th>
+                                    <th>Discount</th>
+                                    <th>Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody id="editItemsBody"></tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <div class="totals">
+                    <p><b>Total Amount:</b> <span id="calcTotalAmount">0</span></p>
+                    <p><b>Total Profit:</b> <span id="calcTotalProfit">0</span></p>
+                </div>
+                <div class="actions">
+                    <button id="saveEditBtn">Save</button>
+                    <button id="cancelEditBtn">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Toast Popup -->
+    <div id="toastPopup" class="toast-popup" style="display:none;"></div>
+    <div id="toastOverlay" class="toast-overlay"></div>
+
+
+    <footer class="page-footer">
+        <button id="exportCsvBtn">Export CSV</button>
+    </footer>
+
+    <script>
+        // Firebase init (same project you already use)
+        const firebaseConfig = {
+            apiKey: "AIzaSyC-crKfYn4PUeQXLIMIpCrfOVuuUXb4dfs",
+            authDomain: "chinatownshop.firebaseapp.com",
+            projectId: "chinatownshop",
+            storageBucket: "chinatownshop.firebasestorage.app",
+            messagingSenderId: "444794925166",
+            appId: "1:444794925166:web:d5ce731d58c090fa49767f",
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        window.db = firebase.firestore();
+
+        // 🔹 Debug: check Firebase init
+        console.log("Firebase app initialized:", !!firebase.apps.length);
+        console.log("Firestore instance:", window.db);
+    </script>
+
+    <script src="sale.js"></script>
+</body>
+
+</html>

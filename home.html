@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>POS Dashboard - Home</title>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Jost&display=swap" rel="stylesheet">
+
+  <!-- Google Charts -->
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+  <style>
+    :root {
+      --font-family: 'Jost', sans-serif;
+      --bg-light: #f9f9f9;
+      --text-light: #333;
+      --primary-light: rgba(207, 207, 207, 0.3);
+      --bg-dark: #1e1e1e;
+      --text-dark: #fff;
+      --primary-dark: rgba(255, 255, 255, 0.07);
+
+      --accent: #c71f16;
+      --accent-hover: #a81812;
+      --card-radius: 20px;
+    }
+
+    [data-theme="light"] {
+      --bg-color: var(--bg-light);
+      --text-color: var(--text-light);
+      --primary-color: var(--primary-light);
+      --border-color: #ddd;
+    }
+
+    [data-theme="dark"] {
+      --bg-color: var(--bg-dark);
+      --text-color: var(--text-dark);
+      --primary-color: var(--primary-dark);
+      --border-color: #333;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: var(--font-family);
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg-color);
+      color: var(--text-color);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      padding: 15px;
+    }
+
+    .summary-card {
+      background: var(--primary-color);
+      border-radius: var(--card-radius);
+      padding: 16px;
+      position: relative;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, .1);
+    }
+
+    .summary-card h3 {
+      margin: 0 0 10px 0;
+    }
+
+    .summary-layout {
+      min-height: 90px;
+      position: relative;
+      border: 1px dashed var(--border-color);
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .summary-layout .top-right {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      text-align: right;
+    }
+
+    .summary-layout .bottom-left {
+      position: absolute;
+      bottom: 10px;
+      left: 12px;
+      text-align: left;
+    }
+
+    .label {
+      display: block;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .value {
+      display: block;
+      font-size: 22px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    /* Chart container */
+    .chart-container {
+      margin: 20px;
+      padding: 20px;
+      border-radius: var(--card-radius);
+      background: var(--primary-color);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, .1);
+    }
+
+    @media (max-width: 900px) {
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+
+    .chart-container {
+      margin: 20px;
+      padding: 20px;
+      border-radius: var(--card-radius);
+      background: var(--primary-color);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, .06);
+      /* FIX: stable height prevents layout feedback loop */
+      height: 420px;
+      min-height: 300px;
+    }
+
+    .chart-container h3 {
+      margin: 0 0 10px 0;
+      font-size: 18px;
+    }
+
+    .chart-wrap {
+      position: relative;
+      width: 100%;
+      height: calc(100% - 36px);
+      /* leave room for the header */
+    }
+
+    .chart-wrap canvas {
+      display: block;
+      width: 100% !important;
+      height: 100% !important;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Summary row -->
+  <section class="summary-grid">
+    <!-- Card 1: Today -->
+    <div class="summary-card">
+      <h3>Today</h3>
+      <div class="summary-layout">
+        <div class="bottom-left">
+          <span class="label">Sales</span>
+          <span id="todaySales" class="value">0</span>
+        </div>
+        <div class="top-right">
+          <span class="label">Profit</span>
+          <span id="todayProfit" class="value">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: This Month -->
+    <div class="summary-card">
+      <h3>This Month</h3>
+      <div class="summary-layout">
+        <div class="bottom-left">
+          <span class="label">Sales</span>
+          <span id="monthSales" class="value">0</span>
+        </div>
+        <div class="top-right">
+          <span class="label">Profit</span>
+          <span id="monthProfit" class="value">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: Last Month -->
+    <div class="summary-card">
+      <h3>Last Month</h3>
+      <div class="summary-layout">
+        <div class="bottom-left">
+          <span class="label">Sales</span>
+          <span id="lastMonthSales" class="value">0</span>
+        </div>
+        <div class="top-right">
+          <span class="label">Profit</span>
+          <span id="lastMonthProfit" class="value">0</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chart row -->
+  <section class="chart-container" aria-label="Yearly Sales and Profit">
+    <h3>Yearly Sales & Profit</h3>
+    <div class="chart-wrap">
+      <!-- removed canvas height attribute (do NOT set it) -->
+      <canvas id="yearlyChart"></canvas>
+    </div>
+  </section>
+
+  <script src="pos.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>China Town Shop</title>
+    <link rel="stylesheet" href="products.css" />
+    <!-- <link rel="stylesheet" href="common.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Jost&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
+    <script src="https://cdn.lordicon.com/lordicon.js"></script>
+    <link rel="stylesheet" href="common.css">
+
+    <style>
+        :root {
+            --light-bg: #f4f1f1;
+            --light-header: #fdfefe;
+            --light-text: black;
+
+            --dark-bg: #1b1818e4;
+            --dark-header: #362f2f;
+            --dark-text: white;
+            --hover-color: red;
+        }
+
+
+        /* Light Theme (default) */
+        [data-theme="light"] {
+            --header-bg: var(--light-header);
+            --text-color: var(--light-text);
+            --bg-color: var(--light-bg);
+        }
+
+        /* Dark Theme */
+        [data-theme="dark"] {
+            --header-bg: var(--dark-header);
+            --text-color: var(--dark-text);
+            --bg-color: var(--dark-bg);
+        }
+
+        body {
+            background-color: var(--bg-color) !important;
+            color: var(--text-color) !important;
+
+        }
+
+        .cart-container {
+            padding: 1rem;
+        }
+
+        /* Title */
+        .cart-header {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-bottom: 1rem;
+            border: 1px solid red;
+
+            border-radius: 50px;
+        }
+
+        /* Product card */
+        .cart-item {
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .cart-item img {
+            width: 100%;
+            max-height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .cart-item h3 {
+            margin: 0.5rem 0;
+        }
+
+        .cart-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-actions button {
+            background: #e83a30;
+            border: none;
+            color: #fff;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .qty-controls button {
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+            background: var(--bg-color);
+            border: 1px solid red;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Summary */
+        .cart-summary {
+            border-top: 2px solid #ddd;
+            padding-top: 1rem;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .checkout-btn {
+            background: #e83a30;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+            font-size: 16px;
+        }
+
+        /* Desktop Layout */
+        @media (min-width: 768px) {
+            .cart-container {
+                display: grid;
+                grid-template-columns: 2fr 1fr;
+                gap: 1.5rem;
+            }
+
+            .cart-list {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .cart-item {
+                flex-direction: row;
+                gap: 1rem;
+            }
+
+            .cart-item img {
+                width: 120px;
+                height: auto;
+                flex-shrink: 0;
+            }
+
+            .cart-item-content {
+                flex: 1;
+            }
+
+            .cart-summary {
+                align-self: start;
+                text-align: left;
+            }
+        }
+
+
+        /* Common Cart Item Style */
+        .cart-item {
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .cart-item img {
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        /* Desktop Layout */
+        @media (min-width: 768px) {
+            .cart-container {
+                display: grid;
+                grid-template-columns: 2fr 1fr;
+                gap: 1.5rem;
+            }
+
+            .cart-list {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .cart-item {
+                flex-direction: row;
+                gap: 1rem;
+                align-items: center;
+            }
+
+            .cart-item img {
+                width: 120px;
+                height: auto;
+                flex-shrink: 0;
+            }
+
+            .cart-item-content {
+                flex: 1;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .cart-actions {
+                display: flex;
+                gap: 1rem;
+            }
+        }
+
+        /* Mobile Layout */
+        @media (max-width: 767px) {
+            .cart-item-content {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .cart-header {
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                margin-bottom: 1rem;
+                border: 1px solid red;
+                margin-top: 20px;
+            }
+
+            .cart-actions {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+            }
+
+            .cart-actions button.buy-now {
+                background: #00a86b;
+                margin-top: 0.5rem;
+            }
+
+            .cart-item img {
+                width: 80px;
+                height: 80px;
+            }
+
+            .cart-item-row {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Cart body */
+        .cart-body {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            padding: 0 1rem;
+        }
+
+        /* Desktop Layout */
+        @media(min-width:768px) {
+            .cart-body {
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 2rem;
+            }
+
+            .cart-list {
+                flex: 2;
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .cart-summary {
+                flex: 1;
+                border-top: none;
+                border-left: 1px solid #ddd;
+                padding-left: 1rem;
+                text-align: left;
+            }
+        }
+
+        /* Cart items: mobile + desktop */
+        .cart-item {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 1rem;
+            gap: 0.5rem;
+            background: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .cart-item-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .cart-item img {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .cart-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .cart-actions button.buy-now {
+            background: #00a86b;
+            margin-top: 0.5rem;
+        }
+
+
+
+
+        /* ===== Desktop / Tablet Layout ===== */
+        .variant-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            /* Name | Qty | Price | Remove */
+            align-items: center;
+            gap: 20px;
+            padding: 12px 15px;
+            background: var(--bg-color);
+            border-bottom: 1px solid #ddd;
+            color: var(--text-color);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .variant-name {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .qty-controls button {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #ccc;
+            background: #f8f8f8;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .qty-controls span {
+            min-width: 24px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .variant-price {
+            font-weight: bold;
+            font-size: 1rem;
+            color: #2d7a2d;
+            text-align: right;
+        }
+
+        .remove {
+            background: #e83a30;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .remove:hover {
+            background: #c72b22;
+        }
+
+        /* ===== Mobile Layout (≤768px) ===== */
+        @media (max-width: 768px) {
+            .variant-row {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+                padding: 12px;
+            }
+
+            .variant-name {
+                font-size: 1rem;
+                font-weight: 600;
+                width: 100%;
+            }
+
+            .qty-controls {
+                justify-content: flex-start;
+            }
+
+            .variant-price {
+                font-size: 0.95rem;
+                color: #2d7a2d;
+                width: 100%;
+                text-align: left;
+            }
+
+            .remove {
+                align-self: flex-end;
+                padding: 8px 16px;
+                font-size: 0.85rem;
+            }
+        }
+
+
+        #wishlistGrid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .wishlist-header,
+        .wishlist-row {
+            display: grid;
+            grid-template-columns: 100px 1fr 100px 120px 120px;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .wishlist-header {
+            font-weight: bold;
+            background: var(--bg-color);
+        }
+
+        .wishlist-col img {
+            max-width: 80px;
+            max-height: 80px;
+            object-fit: contain;
+        }
+
+        .wishlist-row button {
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 20px;
+            min-width: 100px;
+        }
+
+        .add-cart-btnn {
+            background: #e13737;
+            color: white;
+        }
+
+        .add-cart-btnn:hover {
+            background-color: var(--bg-color);
+            border: 1px solid red;
+            color: red;
+        }
+
+        .buy-now-btn {
+            background: #16e0d9;
+            color: white;
+        }
+
+        .buy-now-btn:hover {
+            background-color: var(--bg-color);
+            border: 1px solid #37e1c5;
+            color: #37e1c5;
+        }
+
+
+        /* ===== Wishlist Responsive Styles ===== */
+        #wishlistGrid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+
+        /* Desktop view (grid style like table) */
+        .wishlist-header,
+        .wishlist-row {
+            display: grid;
+            grid-template-columns: 100px 1fr 100px 120px 120px;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .wishlist-header {
+            font-weight: bold;
+            background: var(--bg-color);
+        }
+
+        .wishlist-col img {
+            max-width: 80px;
+            max-height: 80px;
+            object-fit: contain;
+        }
+
+        .wishlist-row button {
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 20px;
+            min-width: 100px;
+            min-height: 30px;
+            transition: 0.3s;
+        }
+
+        /* Mobile view (stacked cards) */
+        @media (max-width: 768px) {
+            .wishlist-header {
+                display: none;
+                /* hide table header */
+            }
+
+            .wishlist-row {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+                padding: 12px;
+                border: 1px solid #ddd;
+                border-radius: 12px;
+                background: var(--bg-color);
+            }
+
+            .wishlist-col {
+                width: 100%;
+            }
+
+            .wishlist-col img {
+                width: 100%;
+                max-width: 150px;
+                height: auto;
+                border-radius: 8px;
+            }
+
+            .wishlist-row button {
+                width: 100%;
+                /* full width on mobile */
+                margin-top: 6px;
+            }
+        }
+
+
+        .wishlist-row {
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .wishlist-row:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+    </style>
+
+    <!-- Firebase and Auth Script -->
+    <script type="module" src="firebase-init.js"></script>
+    <script type="module" src="auth.js"></script>
+
+</head>
+
+<body>
+
+    <header class="main-header">
+
+        <div class="logo" onclick="window.location.href='products.html'" style="cursor: pointer;">
+            <span class="logo-text">
+                <sup><strong><b>CHINA TOWN</b></strong></sup><sub>Shop</sub>
+            </span>
+            <img src="assets/images/ChinaTown.png" alt="China Town Shop Logo" class="logo-img" />
+        </div>
+
+
+
+        <div class="search-row">
+            <input type="text" id="searchInputDesktop" placeholder="Search products..." />
+        </div>
+
+
+        <div class="icons">
+            <span class="icon" id="cartIcon" onclick="location.href='cart.html'">
+                <lord-icon src="https://cdn.lordicon.com/ggirntso.json" trigger="hover"
+                    colors="primary:#e83a30,secondary:#e83a30">
+                </lord-icon>
+                <span class="badge hide" id="cartCount">0</span>
+            </span>
+            <span class="icon" id="favIcon" onclick="location.href='wishlist.html'">
+                <lord-icon src="https://cdn.lordicon.com/nvsfzbop.json" trigger="hover"
+                    colors="primary:#e83a30,secondary:#e83a30">
+                </lord-icon>
+
+                <span class="badge hide" id="favCount">0</span>
+            </span>
+
+            <span class="icon" id="themeToggleIcon">
+                <img id="themeIconImg" src="assets/icons/moon.png" alt="Theme Icon" width="24" height="24" />
+            </span>
+
+            <span class="icon" id="userArea">
+                <lord-icon src="https://cdn.lordicon.com/kdduutaw.json" trigger="hover"
+                    colors="primary:#c71f16,secondary:#e83a30" onclick="toggleLoginPopup()"> </lord-icon>
+            </span>
+
+
+
+        </div>
+
+
+
+    </header>
+
+
+
+    <div class="midd">
+        <div class="mobile-search mobile-only" style="position: fixed; z-index: 100;top: 60px;">
+            <input type="text" id="searchInputMobile" placeholder="Search products..." />
+        </div>
+    </div>
+    <!-- Mobile search bar (only visible on small screens) -->
+
+
+
+
+
+    <div class="main-content">
+        <!-- LEFT COLUMN: Categories -->
+        <aside class="left-sidebar">
+            <h3>Categories</h3>
+            <div id="categoryGrid" class="category-grid"></div>
+        </aside>
+
+        <!-- RIGHT COLUMN: Products -->
+        <section class="right-content">
+            <main>
+                <div id="loadingSpinner" class="spinner"></div>
+
+                <!-- Cart body: products + summary -->
+
+                <h2>Your Wishlist ❤️</h2>
+                <div id="wishlistGrid" class="product-grid"></div>
+
+                <div id="loadingSpinner" class="spinner"></div>
+                <div class="product-details" id="product-details">
+                    <p
+                        style="font-size: 20px; font-weight: 300; margin-top: 20px; display: flex; justify-content: center; text-align: centers;">
+                        You May Also Like</p>
+                </div>
+                <div id="productGrid" class="product-grid"></div>
+                <button id="loadMoreBtn" class="load-more-btn">Load More</button>
+
+                <footer class="site-footer">
+                    <p>&copy; 2025 China Town Shop. All rights reserved.</p>
+                </footer>
+
+            </main>
+
+            <!-- Floating Category Button (Mobile only) -->
+            <button id="openCategoryDrawer" class="floating-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+    </div>
+    <div id="overlay" class="hidden"></div>
+
+
+    <!-- Mobile Category Drawer -->
+    <div id="categoryDrawer" class="category-drawer">
+        <div class="drawer-header">
+            <span id="drawerBack" class="hidden"><i class="fas fa-arrow-left"></i></span>
+            <span id="drawerTitle">Categories</span>
+            <span id="drawerClose"><i class="fas fa-times"></i></span>
+        </div>
+        <div id="drawerContent" class="drawer-content"></div>
+    </div>
+
+
+    <!-- Subcategory Drawer (Desktop only, initially hidden) -->
+    <div id="subCategoryDrawer" class="subcategory-drawer hidden">
+        <div class="drawer-header">
+            <span id="subDrawerTitle">Subcategories</span>
+            <span id="subDrawerClose"><i class="fas fa-times"></i></span>
+        </div>
+        <div id="subDrawerContent" class="drawer-content"></div>
+    </div>
+
+
+
+    <!--  LOGIN POPUP -->
+    <div id="loginPopup" class="login-popup hidden">
+        <div class="popup-content">
+            <h2 style="color: rgb(247, 38, 38);">Explore More By Log In</h2>
+
+            <!-- Google Button -->
+            <button onclick="loginGoogle()">
+                <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="btn-icon">
+                Sign in with Google
+            </button>
+
+            <!-- Facebook Button -->
+            <button onclick="loginFacebook()">
+                <img src="assets/icons/facebook.png" alt="Facebook" class="btn-icon">
+                Sign in with Facebook
+            </button>
+
+            <p>verify with WhatsApp/Telegram before ordering</p>
+            <button onclick="closeLoginPopup()">Close</button>
+        </div>
+
+    </div>
+
+    <!-- USER DRAWER -->
+
+    <div id="userDrawer" class="user-drawer">
+        <button class="drawer-close-btn" onclick="closeUserDrawer()">×</button>
+        <div class="drawer-content">
+            <div class="profile-header">
+                <img id="drawerProfileImg" class="drawer-profile-img" src="" alt="Profile Picture" />
+                <div class="profile-info">
+                    <h3 id="drawerName">User Name</h3>
+                    <p id="drawerEmail">Email</p>
+                </div>
+            </div>
+
+            <!-- Account Button -->
+            <button class="save-btn" onclick="openAccountPopup()">Account</button>
+
+            <!-- New Drawer Options -->
+            <ul class="drawer-options">
+                <li><a href="userorder.html">Orders</a></li>
+                <li><a href="makewish.html">Wishlist</a></li>
+                <li><a href="support.html">Support</a></li>
+            </ul>
+
+            <!-- Logout Button -->
+            <button class="logout-btn" onclick="logoutUser()">Logout</button>
+        </div>
+    </div>
+
+
+    <!-- Account Popup -->
+    <div id="accountPopup" class="login-popup">
+        <div class="popup-content">
+            <!-- Close icon at top-right -->
+            <button class="popup-close-icon" onclick="closeAccountPopup()">×</button>
+            <h2>Account Details</h2>
+            <form id="userInfoForm" onsubmit="event.preventDefault(); saveUserInfo();">
+                <label for="userBirthday">Birthday:</label>
+                <input type="date" id="userBirthday" />
+
+                <label for="userGender">Gender:</label>
+                <select id="userGender">
+                    <option value="">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+
+                <label for="userPhone">Phone Number:</label>
+                <input id="userPhone" type="tel" placeholder="+880..." />
+
+                <label for="userAddress">Address:</label>
+                <textarea id="userAddress" placeholder="Enter your address"></textarea>
+
+                <div class="button-group">
+                    <button type="submit" class="save-btn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    </section>
+    </div>
+
+
+    <script src="products.js"></script>
+    <script type="module" src="authproducts.js"></script>
+    <script src="wishlist.js"></script>
+
+
+    <script>
+        (function () {
+            const htmlEl = document.documentElement;
+            const themeToggleIcon = document.getElementById('themeToggleIcon');
+            const themeIconImg = document.getElementById('themeIconImg');
+
+            const themes = {
+                light: {
+                    '--bg-color': '#f4f1f1',
+                    '--text-color': 'black',
+                    '--header-bg': '#fdfefe'
+                },
+                dark: {
+                    '--bg-color': '#1b1818e4',
+                    '--text-color': 'white',
+                    '--header-bg': '#362f2f'
+                }
+            };
+
+            // Load initial theme
+            let currentTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(currentTheme);
+
+            themeToggleIcon.addEventListener('click', () => {
+                currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+                applyTheme(currentTheme);
+                localStorage.setItem('theme', currentTheme);
+                console.log('Theme switched to', currentTheme);
+            });
+
+            function applyTheme(theme) {
+                const vars = themes[theme];
+                Object.keys(vars).forEach(key => {
+                    htmlEl.style.setProperty(key, vars[key]);
+                });
+                themeIconImg.src = theme === 'light' ? 'assets/icons/moon.png' : 'assets/icons/sun.png';
+            }
+        })();
+    </script>
+
+</body>
+
+</html>
