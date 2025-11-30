@@ -155,7 +155,7 @@ const spreadsheetId = "1nr6fXL6wbUHlXZaiAQYEFBWLMAauevT8zOtMfXbHMYw";
 // const sheetName = "Sheet1"; // Change to your actual sheet tab name
 const apiKey = "AIzaSyC-crKfYn4PUeQXLIMIpCrfOVuuUXb4dfs";
 
-const googleSheetsAPI =  `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}?includeGridData=true&key=${apiKey}`;
+const googleSheetsAPI = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}?includeGridData=true&key=${apiKey}`;
 
 // Helper function to convert sheet rows (arrays) to objects using header row
 function parseSheetData(sheetValues) {
@@ -385,51 +385,89 @@ function closeCategoryDrawerFn() {
   highlightActive(null);
 }
 
+// async function loadAllSheets() {
+//   try {
+//     const sheetNames = await getAllSheetNames();
+//     let allProducts = [];
+
+//     for (const name of sheetNames) {
+//       const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${encodeURIComponent(name)}?key=${apiKey}`;
+//       const res = await fetch(url);
+//       const data = await res.json();
+
+//       if (!data.values) {
+//         console.warn(`⚠️ No data in sheet: ${name}`);
+//         continue;
+//       }
+
+//       const products = parseSheetData(data.values).map(p => ({
+//         ...p,
+//         sourceSheet: name
+//       }));
+
+//       allProducts = allProducts.concat(products);
+//     }
+
+//     // Filter only status = online
+//     const onlineProducts = allProducts.filter(p =>
+//       (p.status || "").trim().toLowerCase() === "online"
+//     );
+
+//     console.log("✅ Online products:", onlineProducts.length);
+
+//     // Render only online products
+//     renderProducts(onlineProducts);   // main products
+//     renderSliderProducts(onlineProducts);  // feature slider
+
+
+//     // Build categories only from online items
+//     buildCategoryMap(onlineProducts);
+//     populateMainCategories();
+//     populateCategoryTiles();
+
+//   } catch (err) {
+//     console.error("❌ Failed to load sheets:", err);
+//   }
+// }
+
+
+
+const publishedSheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRhfzv9IWf8X8lEO3sFkhMBRgCjBu_0xHgX4xVQhYWUl-NRfYVxLwPZo5pnMusjOj_e6fyZ2R1HgC_Q/pub?output=csv";
+
 async function loadAllSheets() {
   try {
-    const sheetNames = await getAllSheetNames();
-    let allProducts = [];
+    const res = await fetch(publishedSheetURL);
+    const csvText = await res.text();
 
-    for (const name of sheetNames) {
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${encodeURIComponent(name)}?key=${apiKey}`;
-      const res = await fetch(url);
-      const data = await res.json();
+    const lines = csvText.split("\n").filter(line => line.trim() !== "");
+    const headers = lines[0].split(",").map(h => h.trim());
+    let allProducts = lines.slice(1).map(line => {
+      const values = line.split(",").map(v => v.trim());
+      const obj = {};
+      headers.forEach((key, i) => obj[key] = values[i] || "");
+      return obj;
+    });
 
-      if (!data.values) {
-        console.warn(`⚠️ No data in sheet: ${name}`);
-        continue;
-      }
-
-      const products = parseSheetData(data.values).map(p => ({
-        ...p,
-        sourceSheet: name
-      }));
-
-      allProducts = allProducts.concat(products);
-    }
-
-    // Filter only status = online
+    // Filter only online products
     const onlineProducts = allProducts.filter(p =>
       (p.status || "").trim().toLowerCase() === "online"
     );
 
     console.log("✅ Online products:", onlineProducts.length);
 
-    // Render only online products
-    renderProducts(onlineProducts);   // main products
-    renderSliderProducts(onlineProducts);  // feature slider
+    // Render products & slider
+    renderProducts(onlineProducts);
+    renderSliderProducts(onlineProducts);
 
-
-    // Build categories only from online items
+    // Build categories from online products
     buildCategoryMap(onlineProducts);
     populateMainCategories();
     populateCategoryTiles();
 
   } catch (err) {
-    console.error("❌ Failed to load sheets:", err);
+    console.error("❌ Failed to load CSV:", err);
   }
 }
-
 
 
 function renderSliderProducts(products) {

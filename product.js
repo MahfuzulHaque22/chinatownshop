@@ -394,48 +394,91 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // On Load
+  // // On Load
+  // showSpinner();
+  // // Fetch *all* sheets at once
+  // const allSheetsAPI = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}?includeGridData=true&key=${apiKey}`;
+
+  // fetch(allSheetsAPI)
+  //   .then(res => res.json())
+  //   .then(data => {
+  //     if (!data.sheets) throw new Error("No sheets found");
+
+  //     let mergedProducts = [];
+
+  //     data.sheets.forEach(sheet => {
+  //       const grid = sheet.data?.[0]?.rowData || [];
+  //       if (!grid.length) return;
+
+  //       // first row = headers
+  //       const headers = (grid[0].values || []).map(v => v.formattedValue || "");
+  //       const rows = grid.slice(1);
+
+  //       rows.forEach(row => {
+  //         const obj = {};
+  //         let hasData = false;
+
+  //         (row.values || []).forEach((cell, i) => {
+  //           const val = cell.formattedValue || "";
+  //           if (val.trim() !== "") hasData = true;
+  //           obj[headers[i]] = val;
+  //         });
+
+  //         if (hasData) mergedProducts.push(obj);
+  //       });
+  //     });
+
+  //     // ✅ APPLY FILTER HERE (after all sheets processed)
+  //     mergedProducts = mergedProducts.filter(p =>
+  //       (p.status || "").toLowerCase().trim() === "online"
+  //     );
+
+  //     allProducts = shuffleArray(filterProducts(mergedProducts));
+  //     currentProducts = [...allProducts];
+  //     categoryMap = buildCategoryMap(mergedProducts);
+
+  //     localStorage.setItem("allProducts", JSON.stringify(allProducts));
+
+  //     renderDesktopCategoryGrid();
+  //     renderProducts(currentProducts, true);
+  //     showMainCategories();
+  //   })
+  //   .catch(err => {
+  //     console.error(err);
+  //     productGrid.innerHTML = "<p style='text-align:center;'>Failed to load products. Please try again later.</p>";
+  //   })
+  //   .finally(hideSpinner);
+
+
+
+  // ===== Fetch products from published Google Sheet =====
   showSpinner();
-  // Fetch *all* sheets at once
-  const allSheetsAPI = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}?includeGridData=true&key=${apiKey}`;
 
-  fetch(allSheetsAPI)
-    .then(res => res.json())
-    .then(data => {
-      if (!data.sheets) throw new Error("No sheets found");
+  const publishedSheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRhfzv9IWf8X8lEO3sFkhMBRgCjBu_0xHgX4xVQhYWUl-NRfYVxLwPZo5pnMusjOj_e6fyZ2R1HgC_Q/pub?output=csv";
 
-      let mergedProducts = [];
+  // We'll fetch as CSV and parse it
+  fetch(publishedSheetURL)
+    .then(res => res.text())
+    .then(csvText => {
+      // Parse CSV into array of objects
+      const lines = csvText.split("\n").filter(line => line.trim() !== "");
+      const headers = lines[0].split(",").map(h => h.trim());
 
-      data.sheets.forEach(sheet => {
-        const grid = sheet.data?.[0]?.rowData || [];
-        if (!grid.length) return;
-
-        // first row = headers
-        const headers = (grid[0].values || []).map(v => v.formattedValue || "");
-        const rows = grid.slice(1);
-
-        rows.forEach(row => {
-          const obj = {};
-          let hasData = false;
-
-          (row.values || []).forEach((cell, i) => {
-            const val = cell.formattedValue || "";
-            if (val.trim() !== "") hasData = true;
-            obj[headers[i]] = val;
-          });
-
-          if (hasData) mergedProducts.push(obj);
+      const mergedProducts = lines.slice(1).map(line => {
+        const values = line.split(",").map(v => v.trim());
+        const obj = {};
+        headers.forEach((key, i) => {
+          obj[key] = values[i] || "";
         });
+        return obj;
       });
 
-      // ✅ APPLY FILTER HERE (after all sheets processed)
-      mergedProducts = mergedProducts.filter(p =>
-        (p.status || "").toLowerCase().trim() === "online"
-      );
+      // Filter only "online" products
+      const onlineProducts = mergedProducts.filter(p => (p.status || "").toLowerCase().trim() === "online");
 
-      allProducts = shuffleArray(filterProducts(mergedProducts));
+      allProducts = shuffleArray(filterProducts(onlineProducts));
       currentProducts = [...allProducts];
-      categoryMap = buildCategoryMap(mergedProducts);
+      categoryMap = buildCategoryMap(onlineProducts);
 
       localStorage.setItem("allProducts", JSON.stringify(allProducts));
 
@@ -448,6 +491,12 @@ document.addEventListener("DOMContentLoaded", () => {
       productGrid.innerHTML = "<p style='text-align:center;'>Failed to load products. Please try again later.</p>";
     })
     .finally(hideSpinner);
+
+  // ===== Helper shuffle function =====
+  function shuffleArray(array) {
+    return array.map(a => [Math.random(), a]).sort((a, b) => a[0] - b[0]).map(a => a[1]);
+  }
+
 
 
   function shuffleArray(array) {
